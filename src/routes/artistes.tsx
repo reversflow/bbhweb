@@ -1,0 +1,207 @@
+import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
+import { Instagram, Music2, Youtube, MapPin, ArrowRight } from "lucide-react";
+import { SiteShell } from "@/components/SiteShell";
+import { SectionHeading } from "@/components/SectionHeading";
+import { CtaButton } from "@/components/CtaButton";
+import { ImageCard } from "@/components/ImageCard";
+import { cn } from "@/lib/utils";
+
+export const Route = createFileRoute("/artistes")({
+  head: () => ({
+    meta: [
+      { title: "Artistes BBH — Le roster" },
+      {
+        name: "description",
+        content:
+          "Un roster vivant d'artistes, performeurs et créateurs qui collaborent avec BBH.",
+      },
+      { property: "og:title", content: "Artistes BBH" },
+      {
+        property: "og:description",
+        content: "Découvre les artistes qui collaborent avec BBH Association.",
+      },
+    ],
+  }),
+  component: ArtistsPage,
+});
+
+const filters = [
+  "Tous",
+  "Rap",
+  "Trap",
+  "R&B",
+  "Performance live",
+  "Studio Artist",
+  "Collaborateur",
+];
+
+const artists = [
+  {
+    name: "REVERSEFLOW",
+    city: "Espagne / France",
+    genres: ["Rap", "Trap", "Expérimental"],
+    bio: "Artiste espagnol basé en France, fondateur de BBH, entre énergie live, univers sombre et approche internationale.",
+    badge: "Fondateur / Artiste BBH",
+    tone: "mixed" as const,
+  },
+  {
+    name: "Z4NE",
+    city: "France",
+    genres: ["Rap", "Urbain"],
+    bio: "Artiste indépendant de la scène urbaine, présent sur les événements BBH.",
+    badge: "Performer",
+    tone: "blue" as const,
+  },
+  {
+    name: "SOSAZEKID",
+    city: "France",
+    genres: ["Rap", "Trap"],
+    bio: "Artiste émergent connecté à l'univers live et aux collaborations BBH.",
+    badge: "Collaborateur",
+    tone: "red" as const,
+  },
+  {
+    name: "KYANITEE",
+    city: "France",
+    genres: ["Rap", "Mélodique"],
+    bio: "Artiste invitée sur la scène BBH, entre identité vocale et énergie urbaine.",
+    badge: "Performer",
+    tone: "purple" as const,
+  },
+];
+
+function ArtistsPage() {
+  const [active, setActive] = useState("Tous");
+
+  return (
+    <SiteShell>
+      {/* Header */}
+      <section className="relative overflow-hidden border-b border-white/5">
+        <div
+          className="absolute inset-0 -z-10"
+          style={{ background: "var(--gradient-hero)" }}
+        />
+        <div className="mx-auto max-w-7xl px-6 pt-24 pb-16 md:pt-32">
+          <div className="text-xs font-semibold uppercase tracking-[0.25em] text-electric-glow">
+            Le roster
+          </div>
+          <h1 className="mt-4 font-display text-5xl font-black leading-[0.95] tracking-tighter sm:text-7xl">
+            Artistes BBH
+          </h1>
+          <p className="mt-6 max-w-2xl text-lg text-muted-foreground sm:text-xl">
+            Un roster vivant d'artistes, performeurs et créateurs qui collaborent avec
+            BBH.
+          </p>
+        </div>
+      </section>
+
+      {/* Filters */}
+      <section className="mx-auto max-w-7xl px-6 pt-10">
+        <div className="flex flex-wrap gap-2">
+          {filters.map((f) => (
+            <button
+              key={f}
+              onClick={() => setActive(f)}
+              className={cn(
+                "rounded-full border px-4 py-2 text-sm font-medium transition",
+                active === f
+                  ? "border-electric bg-electric/15 text-electric-glow"
+                  : "border-white/10 bg-white/5 text-muted-foreground hover:border-white/20 hover:text-foreground",
+              )}
+            >
+              {f}
+            </button>
+          ))}
+        </div>
+      </section>
+
+      {/* Grid */}
+      <section className="mx-auto max-w-7xl px-6 py-12">
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-2">
+          {artists.map((a) => (
+            <article
+              key={a.name}
+              className="group grid gap-0 overflow-hidden rounded-3xl border border-white/10 bg-surface card-hover sm:grid-cols-[1fr_1.2fr]"
+            >
+              <ImageCard
+                tone={a.tone}
+                aspect="aspect-square sm:aspect-auto sm:h-full"
+                title=""
+                overlay={false}
+                className="rounded-none border-none"
+              />
+              <div className="flex flex-col justify-between p-6">
+                <div>
+                  <span className="inline-flex items-center rounded-full border border-electric/30 bg-electric/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-electric-glow">
+                    {a.badge}
+                  </span>
+                  <h3 className="mt-4 font-display text-2xl font-black tracking-tight">
+                    {a.name}
+                  </h3>
+                  <div className="mt-1.5 flex items-center gap-1.5 text-xs uppercase tracking-[0.18em] text-muted-foreground">
+                    <MapPin className="size-3" /> {a.city}
+                  </div>
+                  <div className="mt-3 flex flex-wrap gap-1.5">
+                    {a.genres.map((g) => (
+                      <span
+                        key={g}
+                        className="rounded-full border border-white/10 px-2.5 py-0.5 text-[11px] text-muted-foreground"
+                      >
+                        {g}
+                      </span>
+                    ))}
+                  </div>
+                  <p className="mt-4 text-sm text-muted-foreground">{a.bio}</p>
+                </div>
+                <div className="mt-6 flex gap-2">
+                  <a
+                    href="#"
+                    aria-label="Instagram"
+                    className="grid size-9 place-items-center rounded-full border border-white/10 text-muted-foreground transition hover:border-electric/40 hover:text-foreground"
+                  >
+                    <Instagram className="size-4" />
+                  </a>
+                  <a
+                    href="#"
+                    aria-label="Spotify"
+                    className="grid size-9 place-items-center rounded-full border border-white/10 text-muted-foreground transition hover:border-electric/40 hover:text-foreground"
+                  >
+                    <Music2 className="size-4" />
+                  </a>
+                  <a
+                    href="#"
+                    aria-label="YouTube"
+                    className="grid size-9 place-items-center rounded-full border border-white/10 text-muted-foreground transition hover:border-electric/40 hover:text-foreground"
+                  >
+                    <Youtube className="size-4" />
+                  </a>
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="mx-auto max-w-7xl px-6 pb-32">
+        <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-surface p-10 md:p-16">
+          <div
+            className="absolute inset-0 -z-10"
+            style={{ background: "var(--gradient-hero)" }}
+          />
+          <SectionHeading
+            eyebrow="Rejoins le catalogue"
+            title="Tu veux rejoindre le catalogue BBH&nbsp;?"
+            description="Envoie ton profil, tes liens et ton univers. On regarde tout ce qui passe."
+          />
+          <div className="mt-8">
+            <CtaButton to="/contact" variant="primary">
+              Envoyer ton profil <ArrowRight className="size-4" />
+            </CtaButton>
+          </div>
+        </div>
+      </section>
+    </SiteShell>
+  );
+}
