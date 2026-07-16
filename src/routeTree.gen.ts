@@ -10,16 +10,33 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as MusiqueRouteImport } from './routes/musique'
+import { Route as JournalRouteImport } from './routes/journal'
 import { Route as EvenementsRouteImport } from './routes/evenements'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AteliersRouteImport } from './routes/ateliers'
 import { Route as ArtistesRouteImport } from './routes/artistes'
 import { Route as AProposRouteImport } from './routes/a-propos'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as MusiqueSlugRouteImport } from './routes/musique.$slug'
+import { Route as JournalSlugRouteImport } from './routes/journal.$slug'
+import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MusiqueRoute = MusiqueRouteImport.update({
+  id: '/musique',
+  path: '/musique',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const JournalRoute = JournalRouteImport.update({
+  id: '/journal',
+  path: '/journal',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EvenementsRoute = EvenementsRouteImport.update({
@@ -30,6 +47,11 @@ const EvenementsRoute = EvenementsRouteImport.update({
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AteliersRoute = AteliersRouteImport.update({
@@ -47,10 +69,29 @@ const AProposRoute = AProposRouteImport.update({
   path: '/a-propos',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const MusiqueSlugRoute = MusiqueSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => MusiqueRoute,
+} as any)
+const JournalSlugRoute = JournalSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => JournalRoute,
+} as any)
+const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -58,28 +99,47 @@ export interface FileRoutesByFullPath {
   '/a-propos': typeof AProposRoute
   '/artistes': typeof ArtistesRoute
   '/ateliers': typeof AteliersRoute
+  '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/evenements': typeof EvenementsRoute
+  '/journal': typeof JournalRouteWithChildren
+  '/musique': typeof MusiqueRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/admin': typeof AuthenticatedAdminRoute
+  '/journal/$slug': typeof JournalSlugRoute
+  '/musique/$slug': typeof MusiqueSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/a-propos': typeof AProposRoute
   '/artistes': typeof ArtistesRoute
   '/ateliers': typeof AteliersRoute
+  '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/evenements': typeof EvenementsRoute
+  '/journal': typeof JournalRouteWithChildren
+  '/musique': typeof MusiqueRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/admin': typeof AuthenticatedAdminRoute
+  '/journal/$slug': typeof JournalSlugRoute
+  '/musique/$slug': typeof MusiqueSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/a-propos': typeof AProposRoute
   '/artistes': typeof ArtistesRoute
   '/ateliers': typeof AteliersRoute
+  '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/evenements': typeof EvenementsRoute
+  '/journal': typeof JournalRouteWithChildren
+  '/musique': typeof MusiqueRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRoute
+  '/journal/$slug': typeof JournalSlugRoute
+  '/musique/$slug': typeof MusiqueSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -88,36 +148,59 @@ export interface FileRouteTypes {
     | '/a-propos'
     | '/artistes'
     | '/ateliers'
+    | '/auth'
     | '/contact'
     | '/evenements'
+    | '/journal'
+    | '/musique'
     | '/sitemap.xml'
+    | '/admin'
+    | '/journal/$slug'
+    | '/musique/$slug'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/a-propos'
     | '/artistes'
     | '/ateliers'
+    | '/auth'
     | '/contact'
     | '/evenements'
+    | '/journal'
+    | '/musique'
     | '/sitemap.xml'
+    | '/admin'
+    | '/journal/$slug'
+    | '/musique/$slug'
   id:
     | '__root__'
     | '/'
+    | '/_authenticated'
     | '/a-propos'
     | '/artistes'
     | '/ateliers'
+    | '/auth'
     | '/contact'
     | '/evenements'
+    | '/journal'
+    | '/musique'
     | '/sitemap.xml'
+    | '/_authenticated/admin'
+    | '/journal/$slug'
+    | '/musique/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AProposRoute: typeof AProposRoute
   ArtistesRoute: typeof ArtistesRoute
   AteliersRoute: typeof AteliersRoute
+  AuthRoute: typeof AuthRoute
   ContactRoute: typeof ContactRoute
   EvenementsRoute: typeof EvenementsRoute
+  JournalRoute: typeof JournalRouteWithChildren
+  MusiqueRoute: typeof MusiqueRouteWithChildren
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
 }
 
@@ -128,6 +211,20 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/musique': {
+      id: '/musique'
+      path: '/musique'
+      fullPath: '/musique'
+      preLoaderRoute: typeof MusiqueRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/journal': {
+      id: '/journal'
+      path: '/journal'
+      fullPath: '/journal'
+      preLoaderRoute: typeof JournalRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/evenements': {
@@ -142,6 +239,13 @@ declare module '@tanstack/react-router' {
       path: '/contact'
       fullPath: '/contact'
       preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/ateliers': {
@@ -165,6 +269,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AProposRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -172,28 +283,76 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/musique/$slug': {
+      id: '/musique/$slug'
+      path: '/$slug'
+      fullPath: '/musique/$slug'
+      preLoaderRoute: typeof MusiqueSlugRouteImport
+      parentRoute: typeof MusiqueRoute
+    }
+    '/journal/$slug': {
+      id: '/journal/$slug'
+      path: '/$slug'
+      fullPath: '/journal/$slug'
+      preLoaderRoute: typeof JournalSlugRouteImport
+      parentRoute: typeof JournalRoute
+    }
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAdminRoute: AuthenticatedAdminRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
+interface JournalRouteChildren {
+  JournalSlugRoute: typeof JournalSlugRoute
+}
+
+const JournalRouteChildren: JournalRouteChildren = {
+  JournalSlugRoute: JournalSlugRoute,
+}
+
+const JournalRouteWithChildren =
+  JournalRoute._addFileChildren(JournalRouteChildren)
+
+interface MusiqueRouteChildren {
+  MusiqueSlugRoute: typeof MusiqueSlugRoute
+}
+
+const MusiqueRouteChildren: MusiqueRouteChildren = {
+  MusiqueSlugRoute: MusiqueSlugRoute,
+}
+
+const MusiqueRouteWithChildren =
+  MusiqueRoute._addFileChildren(MusiqueRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AProposRoute: AProposRoute,
   ArtistesRoute: ArtistesRoute,
   AteliersRoute: AteliersRoute,
+  AuthRoute: AuthRoute,
   ContactRoute: ContactRoute,
   EvenementsRoute: EvenementsRoute,
+  JournalRoute: JournalRouteWithChildren,
+  MusiqueRoute: MusiqueRouteWithChildren,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
