@@ -11,6 +11,8 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { PlayerProvider } from "@/contexts/player-context";
+import { GlobalPlayerBar } from "@/components/player/GlobalPlayerBar";
 
 function NotFoundComponent() {
   return (
@@ -129,8 +131,12 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
+      <PlayerProvider>
+        <div className="pb-24">
+          <Outlet />
+        </div>
+        <GlobalPlayerBar />
+      </PlayerProvider>
     </QueryClientProvider>
   );
 }
