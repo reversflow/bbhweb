@@ -84,20 +84,23 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         name: "description",
         content:
-          "Association culturelle en Hauts-de-France : événements, ateliers et artistes autour de la culture urbaine et du rap.",
+          "BBH Association crée des événements, ateliers et projets culturels autour du rap et de la musique en Hauts-de-France.",
       },
       { name: "author", content: "BBH Association" },
       { property: "og:title", content: "BBH Association — Élever la culture urbaine" },
       {
         property: "og:description",
-        content: "Événements, ateliers, artistes et projets culturels autour du rap.",
+        content: "BBH Association crée des événements, ateliers et projets culturels autour du rap et de la musique en Hauts-de-France.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "BBH Association — Élever la culture urbaine" },
+      { name: "twitter:description", content: "BBH Association crée des événements, ateliers et projets culturels autour du rap et de la musique en Hauts-de-France." },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/X2BXKdzMFfcdJAZIM2uxvyYnkL52/social-images/social-1784205769623-BBH_LOGO_VEC.webp" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/X2BXKdzMFfcdJAZIM2uxvyYnkL52/social-images/social-1784205769623-BBH_LOGO_VEC.webp" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {

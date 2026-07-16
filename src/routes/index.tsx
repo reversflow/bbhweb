@@ -18,7 +18,7 @@ export const Route = createFileRoute("/")({
       {
         property: "og:description",
         content:
-          "Événements, ateliers, artistes et projets culturels autour du rap, de la musique et de la communauté.",
+          "BBH Association crée des événements, ateliers et projets culturels autour du rap et de la musique en Hauts-de-France.",
       },
     ],
   }),
