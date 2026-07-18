@@ -142,6 +142,14 @@ export function CommentSection({ songId, enabled }: { songId: string; enabled: b
         </div>
       </form>
 
+      {justSubmitted && (
+        <div className="mb-6 rounded-xl border border-electric/30 bg-electric/10 px-4 py-3 text-sm text-electric-glow">
+          Merci ! Ton commentaire est en attente de modération et sera publié
+          après validation par l'équipe BBH.
+        </div>
+      )}
+
+
       {loading ? (
         <div className="text-sm text-muted-foreground">Chargement…</div>
       ) : topLevel.length === 0 ? (
