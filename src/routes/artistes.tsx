@@ -1,11 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
 import { Instagram, Music2, Youtube, MapPin, ArrowRight } from "lucide-react";
 import { SiteShell } from "@/components/SiteShell";
 import { SectionHeading } from "@/components/SectionHeading";
 import { CtaButton } from "@/components/CtaButton";
 import { ImageCard } from "@/components/ImageCard";
-import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/artistes")({
   head: () => ({
@@ -14,7 +12,7 @@ export const Route = createFileRoute("/artistes")({
       {
         name: "description",
         content:
-          "Un roster vivant d'artistes, performeurs et créateurs qui collaborent avec BBH.",
+          "Un roster à taille humaine. BBH démarre avec REVERSEFLOW, artiste fondateur.",
       },
       { property: "og:title", content: "Artistes BBH" },
       {
@@ -26,16 +24,6 @@ export const Route = createFileRoute("/artistes")({
   component: ArtistsPage,
 });
 
-const filters = [
-  "Tous",
-  "Rap",
-  "Trap",
-  "R&B",
-  "Performance live",
-  "Studio Artist",
-  "Collaborateur",
-];
-
 const artists = [
   {
     name: "REVERSEFLOW",
@@ -46,6 +34,7 @@ const artists = [
     tone: "mixed" as const,
   },
 ];
+
 
 
 function ArtistsPage() {
