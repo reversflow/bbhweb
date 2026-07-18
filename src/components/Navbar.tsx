@@ -1,6 +1,8 @@
 import { Link } from "@tanstack/react-router";
-import { useState } from "react";
-import { Menu, X } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Menu, X, ShieldCheck, LogIn } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useIsAdmin } from "@/hooks/use-admin";
 
 const links = [
   { to: "/", label: "Accueil" },
@@ -15,6 +17,16 @@ const links = [
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
+  const [authed, setAuthed] = useState(false);
+  const { isAdmin } = useIsAdmin();
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => setAuthed(!!data.user));
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
+      setAuthed(!!session?.user);
+    });
+    return () => sub.subscription.unsubscribe();
+  }, []);
 
   return (
     <header className="sticky top-0 z-50 border-b border-white/5 bg-background/70 backdrop-blur-xl">
@@ -36,14 +48,29 @@ export function Navbar() {
               activeOptions={{ exact: l.to === "/" }}
               activeProps={{ className: "text-foreground" }}
               inactiveProps={{ className: "text-muted-foreground" }}
-              className="rounded-full px-4 py-2 text-sm font-medium transition-colors hover:text-foreground"
+              className="rounded-full px-3.5 py-2 text-sm font-medium transition-colors hover:text-foreground"
             >
               {l.label}
             </Link>
           ))}
         </nav>
 
-        <div className="hidden md:block">
+        <div className="hidden items-center gap-2 md:flex">
+          {authed && isAdmin ? (
+            <Link
+              to="/_authenticated/admin" as never
+              className="inline-flex items-center gap-1.5 rounded-full border border-electric/40 bg-electric/10 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-electric-glow transition hover:bg-electric/20"
+            >
+              <ShieldCheck className="size-3.5" /> Admin
+            </Link>
+          ) : (
+            <Link
+              to="/auth"
+              className="inline-flex items-center gap-1.5 rounded-full border border-white/10 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-muted-foreground transition hover:border-white/30 hover:text-foreground"
+            >
+              <LogIn className="size-3.5" /> Connexion
+            </Link>
+          )}
           <Link
             to="/contact"
             className="inline-flex items-center rounded-full bg-white px-5 py-2 text-sm font-semibold text-black transition-transform hover:scale-105"
@@ -77,6 +104,25 @@ export function Navbar() {
                 {l.label}
               </Link>
             ))}
+            <div className="mt-2 border-t border-white/5 pt-3">
+              {authed && isAdmin ? (
+                <Link
+                  to={"/_authenticated/admin" as never}
+                  onClick={() => setOpen(false)}
+                  className="inline-flex items-center gap-2 rounded-full border border-electric/40 bg-electric/10 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-electric-glow"
+                >
+                  <ShieldCheck className="size-3.5" /> Espace admin
+                </Link>
+              ) : (
+                <Link
+                  to="/auth"
+                  onClick={() => setOpen(false)}
+                  className="inline-flex items-center gap-2 rounded-full border border-white/10 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-muted-foreground"
+                >
+                  <LogIn className="size-3.5" /> Connexion
+                </Link>
+              )}
+            </div>
           </nav>
         </div>
       )}
