@@ -59,6 +59,11 @@ function ArtistsPage() {
           className="absolute inset-0 -z-10"
           style={{ background: "var(--gradient-hero)" }}
         />
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 select-none overflow-hidden">
+          <div className="whitespace-nowrap text-center font-display text-[16vw] font-black leading-[0.8] tracking-tighter text-white/[0.04]">
+            ROSTER
+          </div>
+        </div>
         <div className="mx-auto max-w-7xl px-6 pt-24 pb-16 md:pt-32">
           <div className="text-xs font-semibold uppercase tracking-[0.25em] text-electric-glow">
             Le roster
@@ -67,11 +72,12 @@ function ArtistsPage() {
             Artistes BBH
           </h1>
           <p className="mt-6 max-w-2xl text-lg text-muted-foreground sm:text-xl">
-            Un roster vivant d'artistes, performeurs et créateurs qui collaborent avec
-            BBH.
+            Le roster démarre avec un seul nom. On construit lentement, à la
+            main, autour d'un fondateur et d'une identité claire.
           </p>
         </div>
       </section>
+
 
       {/* Filters */}
       <section className="mx-auto max-w-7xl px-6 pt-10">
