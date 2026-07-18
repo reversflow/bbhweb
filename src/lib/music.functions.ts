@@ -141,3 +141,59 @@ export const isCurrentUserAdmin = createServerFn({ method: "GET" })
       .maybeSingle();
     return { isAdmin: !!data };
   });
+
+export const moderateComment = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data) =>
+    z
+      .object({
+        id: z.string().uuid(),
+        status: z.enum(["pending", "approved", "rejected"]),
+      })
+      .parse(data),
+  )
+  .handler(async ({ data, context }) => {
+    await requireAdmin(context.userId);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { error } = await supabaseAdmin
+      .from("comments")
+      .update({ status: data.status })
+      .eq("id", data.id);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
+export const deleteComment = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data) => z.object({ id: z.string().uuid() }).parse(data))
+  .handler(async ({ data, context }) => {
+    await requireAdmin(context.userId);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { error } = await supabaseAdmin.from("comments").delete().eq("id", data.id);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
+export const getAdminStats = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    await requireAdmin(context.userId);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const [songs, journal, pending, approved] = await Promise.all([
+      supabaseAdmin.from("songs").select("id, published", { count: "exact", head: false }),
+      supabaseAdmin.from("journal_posts").select("id, published", { count: "exact", head: false }),
+      supabaseAdmin.from("comments").select("id", { count: "exact", head: true }).eq("status", "pending"),
+      supabaseAdmin.from("comments").select("id", { count: "exact", head: true }).eq("status", "approved"),
+    ]);
+    const songsRows = songs.data ?? [];
+    const journalRows = journal.data ?? [];
+    return {
+      songsTotal: songsRows.length,
+      songsPublished: songsRows.filter((s) => (s as { published: boolean }).published).length,
+      journalTotal: journalRows.length,
+      journalPublished: journalRows.filter((p) => (p as { published: boolean }).published).length,
+      pendingComments: pending.count ?? 0,
+      approvedComments: approved.count ?? 0,
+    };
+  });
+
