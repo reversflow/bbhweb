@@ -1,11 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
 import { Instagram, Music2, Youtube, MapPin, ArrowRight } from "lucide-react";
 import { SiteShell } from "@/components/SiteShell";
 import { SectionHeading } from "@/components/SectionHeading";
 import { CtaButton } from "@/components/CtaButton";
 import { ImageCard } from "@/components/ImageCard";
-import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/artistes")({
   head: () => ({
@@ -14,7 +12,7 @@ export const Route = createFileRoute("/artistes")({
       {
         name: "description",
         content:
-          "Un roster vivant d'artistes, performeurs et créateurs qui collaborent avec BBH.",
+          "Un roster à taille humaine. BBH démarre avec REVERSEFLOW, artiste fondateur.",
       },
       { property: "og:title", content: "Artistes BBH" },
       {
@@ -26,54 +24,20 @@ export const Route = createFileRoute("/artistes")({
   component: ArtistsPage,
 });
 
-const filters = [
-  "Tous",
-  "Rap",
-  "Trap",
-  "R&B",
-  "Performance live",
-  "Studio Artist",
-  "Collaborateur",
-];
-
 const artists = [
   {
     name: "REVERSEFLOW",
     city: "Espagne / France",
     genres: ["Rap", "Trap", "Expérimental"],
-    bio: "Artiste espagnol basé en France, fondateur de BBH, entre énergie live, univers sombre et approche internationale.",
+    bio: "Artiste espagnol basé en France, fondateur de BBH. Univers sombre, énergie live et approche internationale — le point de départ du roster.",
     badge: "Fondateur / Artiste BBH",
     tone: "mixed" as const,
   },
-  {
-    name: "Z4NE",
-    city: "France",
-    genres: ["Rap", "Urbain"],
-    bio: "Artiste indépendant de la scène urbaine, présent sur les événements BBH.",
-    badge: "Performer",
-    tone: "blue" as const,
-  },
-  {
-    name: "SOSAZEKID",
-    city: "France",
-    genres: ["Rap", "Trap"],
-    bio: "Artiste émergent connecté à l'univers live et aux collaborations BBH.",
-    badge: "Collaborateur",
-    tone: "red" as const,
-  },
-  {
-    name: "KYANITEE",
-    city: "France",
-    genres: ["Rap", "Mélodique"],
-    bio: "Artiste invitée sur la scène BBH, entre identité vocale et énergie urbaine.",
-    badge: "Performer",
-    tone: "purple" as const,
-  },
 ];
 
-function ArtistsPage() {
-  const [active, setActive] = useState("Tous");
 
+
+function ArtistsPage() {
   return (
     <SiteShell>
       {/* Header */}
@@ -82,6 +46,11 @@ function ArtistsPage() {
           className="absolute inset-0 -z-10"
           style={{ background: "var(--gradient-hero)" }}
         />
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 select-none overflow-hidden">
+          <div className="whitespace-nowrap text-center font-display text-[16vw] font-black leading-[0.8] tracking-tighter text-white/[0.04]">
+            ROSTER
+          </div>
+        </div>
         <div className="mx-auto max-w-7xl px-6 pt-24 pb-16 md:pt-32">
           <div className="text-xs font-semibold uppercase tracking-[0.25em] text-electric-glow">
             Le roster
@@ -90,31 +59,13 @@ function ArtistsPage() {
             Artistes BBH
           </h1>
           <p className="mt-6 max-w-2xl text-lg text-muted-foreground sm:text-xl">
-            Un roster vivant d'artistes, performeurs et créateurs qui collaborent avec
-            BBH.
+            Le roster démarre avec un seul nom. On construit lentement, à la
+            main, autour d'un fondateur et d'une identité claire.
           </p>
         </div>
       </section>
 
-      {/* Filters */}
-      <section className="mx-auto max-w-7xl px-6 pt-10">
-        <div className="flex flex-wrap gap-2">
-          {filters.map((f) => (
-            <button
-              key={f}
-              onClick={() => setActive(f)}
-              className={cn(
-                "rounded-full border px-4 py-2 text-sm font-medium transition",
-                active === f
-                  ? "border-electric bg-electric/15 text-electric-glow"
-                  : "border-white/10 bg-white/5 text-muted-foreground hover:border-white/20 hover:text-foreground",
-              )}
-            >
-              {f}
-            </button>
-          ))}
-        </div>
-      </section>
+
 
       {/* Grid */}
       <section className="mx-auto max-w-7xl px-6 py-12">
