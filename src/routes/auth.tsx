@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { SiteShell } from "@/components/SiteShell";
+import { ArrowLeft, ShieldCheck, Loader2 } from "lucide-react";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -46,58 +47,80 @@ function AuthPage() {
 
   return (
     <SiteShell>
-      <div className="mx-auto flex min-h-[calc(100vh-8rem)] max-w-md flex-col justify-center px-6 py-16">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-electric-glow">
-          Espace privé
-        </p>
-        <h1 className="mt-3 font-display text-4xl font-black tracking-tighter">
-          {mode === "signin" ? "Connexion" : "Créer un compte"}
-        </h1>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Réservé à l'administration BBH.
-        </p>
+      <section className="relative overflow-hidden">
+        <div
+          className="absolute inset-0 -z-10"
+          style={{ background: "var(--gradient-hero)" }}
+        />
+        <div className="pointer-events-none absolute inset-x-0 top-16 -z-10 select-none text-center font-display text-[22vw] font-black leading-none tracking-tighter text-white/[0.035]">
+          BBH
+        </div>
 
-        <form onSubmit={onSubmit} className="mt-8 space-y-4">
-          <input
-            type="email"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Email"
-            autoComplete="email"
-            className="w-full rounded-lg border border-white/10 bg-black/40 px-4 py-3 text-sm outline-none focus:border-electric focus:ring-2 focus:ring-electric/30"
-          />
-          <input
-            type="password"
-            required
-            minLength={8}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Mot de passe"
-            autoComplete={mode === "signin" ? "current-password" : "new-password"}
-            className="w-full rounded-lg border border-white/10 bg-black/40 px-4 py-3 text-sm outline-none focus:border-electric focus:ring-2 focus:ring-electric/30"
-          />
-          {error && <p className="text-sm text-blood">{error}</p>}
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full rounded-full bg-white py-3 text-sm font-semibold text-black disabled:opacity-50"
-          >
-            {loading ? "…" : mode === "signin" ? "Se connecter" : "Créer le compte"}
-          </button>
-        </form>
+        <div className="mx-auto grid min-h-[calc(100vh-8rem)] max-w-6xl gap-16 px-6 py-16 md:grid-cols-2 md:items-center">
+          <div>
+            <div className="inline-flex items-center gap-2 rounded-full border border-electric/30 bg-electric/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.28em] text-electric-glow">
+              <ShieldCheck className="size-3.5" /> Espace privé
+            </div>
+            <h1 className="mt-6 font-display text-5xl font-black leading-[0.95] tracking-tighter sm:text-6xl">
+              {mode === "signin" ? "Control Room" : "Créer un compte"}
+            </h1>
+            <p className="mt-5 max-w-md text-base text-muted-foreground">
+              Portail d'administration réservé à l'équipe BBH. Les accès admin
+              sont attribués manuellement — un compte visiteur ne débloque
+              rien du côté public.
+            </p>
+            <Link to="/" className="mt-8 inline-flex items-center gap-2 text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground">
+              <ArrowLeft className="size-3.5" /> Retour au site
+            </Link>
+          </div>
 
-        <button
-          onClick={() => setMode(mode === "signin" ? "signup" : "signin")}
-          className="mt-6 text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground"
-        >
-          {mode === "signin" ? "Créer un compte" : "J'ai déjà un compte"}
-        </button>
+          <div className="rounded-3xl border border-white/10 bg-surface/40 p-8 backdrop-blur-xl md:p-10">
+            <form onSubmit={onSubmit} className="space-y-4">
+              <label className="block">
+                <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">Email</span>
+                <input
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  autoComplete="email"
+                  className="w-full rounded-lg border border-white/10 bg-black/40 px-4 py-3 text-sm outline-none focus:border-electric focus:ring-2 focus:ring-electric/30"
+                />
+              </label>
+              <label className="block">
+                <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">Mot de passe</span>
+                <input
+                  type="password"
+                  required
+                  minLength={8}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  autoComplete={mode === "signin" ? "current-password" : "new-password"}
+                  className="w-full rounded-lg border border-white/10 bg-black/40 px-4 py-3 text-sm outline-none focus:border-electric focus:ring-2 focus:ring-electric/30"
+                />
+              </label>
+              {error && (
+                <p className="rounded-lg border border-blood/30 bg-blood/10 px-3 py-2 text-sm text-blood">{error}</p>
+              )}
+              <button
+                type="submit"
+                disabled={loading}
+                className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-white py-3 text-sm font-semibold text-black disabled:opacity-50"
+              >
+                {loading && <Loader2 className="size-4 animate-spin" />}
+                {mode === "signin" ? "Se connecter" : "Créer le compte"}
+              </button>
+            </form>
 
-        <Link to="/" className="mt-2 text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground">
-          ← Retour au site
-        </Link>
-      </div>
+            <button
+              onClick={() => setMode(mode === "signin" ? "signup" : "signin")}
+              className="mt-6 text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground"
+            >
+              {mode === "signin" ? "Créer un compte" : "J'ai déjà un compte"}
+            </button>
+          </div>
+        </div>
+      </section>
     </SiteShell>
   );
 }
