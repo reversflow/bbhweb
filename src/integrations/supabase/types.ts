@@ -110,6 +110,7 @@ export type Database = {
           parent_id: string | null
           post_id: string | null
           song_id: string | null
+          status: string
           visitor_key: string | null
         }
         Insert: {
@@ -121,6 +122,7 @@ export type Database = {
           parent_id?: string | null
           post_id?: string | null
           song_id?: string | null
+          status?: string
           visitor_key?: string | null
         }
         Update: {
@@ -132,6 +134,7 @@ export type Database = {
           parent_id?: string | null
           post_id?: string | null
           song_id?: string | null
+          status?: string
           visitor_key?: string | null
         }
         Relationships: [
