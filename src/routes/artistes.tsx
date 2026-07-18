@@ -38,8 +38,6 @@ const artists = [
 
 
 function ArtistsPage() {
-  const [active, setActive] = useState("Tous");
-
   return (
     <SiteShell>
       {/* Header */}
@@ -68,25 +66,6 @@ function ArtistsPage() {
       </section>
 
 
-      {/* Filters */}
-      <section className="mx-auto max-w-7xl px-6 pt-10">
-        <div className="flex flex-wrap gap-2">
-          {filters.map((f) => (
-            <button
-              key={f}
-              onClick={() => setActive(f)}
-              className={cn(
-                "rounded-full border px-4 py-2 text-sm font-medium transition",
-                active === f
-                  ? "border-electric bg-electric/15 text-electric-glow"
-                  : "border-white/10 bg-white/5 text-muted-foreground hover:border-white/20 hover:text-foreground",
-              )}
-            >
-              {f}
-            </button>
-          ))}
-        </div>
-      </section>
 
       {/* Grid */}
       <section className="mx-auto max-w-7xl px-6 py-12">
