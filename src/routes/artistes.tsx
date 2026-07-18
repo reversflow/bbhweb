@@ -41,35 +41,12 @@ const artists = [
     name: "REVERSEFLOW",
     city: "Espagne / France",
     genres: ["Rap", "Trap", "Expérimental"],
-    bio: "Artiste espagnol basé en France, fondateur de BBH, entre énergie live, univers sombre et approche internationale.",
+    bio: "Artiste espagnol basé en France, fondateur de BBH. Univers sombre, énergie live et approche internationale — le point de départ du roster.",
     badge: "Fondateur / Artiste BBH",
     tone: "mixed" as const,
   },
-  {
-    name: "Z4NE",
-    city: "France",
-    genres: ["Rap", "Urbain"],
-    bio: "Artiste indépendant de la scène urbaine, présent sur les événements BBH.",
-    badge: "Performer",
-    tone: "blue" as const,
-  },
-  {
-    name: "SOSAZEKID",
-    city: "France",
-    genres: ["Rap", "Trap"],
-    bio: "Artiste émergent connecté à l'univers live et aux collaborations BBH.",
-    badge: "Collaborateur",
-    tone: "red" as const,
-  },
-  {
-    name: "KYANITEE",
-    city: "France",
-    genres: ["Rap", "Mélodique"],
-    bio: "Artiste invitée sur la scène BBH, entre identité vocale et énergie urbaine.",
-    badge: "Performer",
-    tone: "purple" as const,
-  },
 ];
+
 
 function ArtistsPage() {
   const [active, setActive] = useState("Tous");
