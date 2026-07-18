@@ -21,6 +21,7 @@ export function CommentSection({ songId, enabled }: { songId: string; enabled: b
   const [replyTo, setReplyTo] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [justSubmitted, setJustSubmitted] = useState(false);
   const visitorKey = useVisitorKey();
 
   useEffect(() => {
@@ -52,23 +53,21 @@ export function CommentSection({ songId, enabled }: { songId: string; enabled: b
     e.preventDefault();
     if (!name.trim() || !content.trim() || submitting) return;
     setSubmitting(true);
-    const { data, error } = await supabase
-      .from("comments")
-      .insert({
-        song_id: songId,
-        parent_id: replyTo,
-        author_name: name.trim().slice(0, 60),
-        content: content.trim().slice(0, 2000),
-        visitor_key: visitorKey,
-      })
-      .select()
-      .single();
+    const { error } = await supabase.from("comments").insert({
+      song_id: songId,
+      parent_id: replyTo,
+      author_name: name.trim().slice(0, 60),
+      content: content.trim().slice(0, 2000),
+      visitor_key: visitorKey,
+    });
     setSubmitting(false);
     if (error) return;
-    setComments((prev) => [data as CommentRow, ...prev]);
     setContent("");
     setReplyTo(null);
+    setJustSubmitted(true);
+    setTimeout(() => setJustSubmitted(false), 6000);
   }
+
 
   async function toggleLike(id: string) {
     if (!visitorKey) return;
