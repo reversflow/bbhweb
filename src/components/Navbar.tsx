@@ -58,7 +58,7 @@ export function Navbar() {
         <div className="hidden items-center gap-2 md:flex">
           {authed && isAdmin ? (
             <Link
-              to={"/_authenticated/admin" as never}
+              to="/admin"
               className="inline-flex items-center gap-1.5 rounded-full border border-electric/40 bg-electric/10 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-electric-glow transition hover:bg-electric/20"
             >
               <ShieldCheck className="size-3.5" /> Admin
@@ -107,7 +107,7 @@ export function Navbar() {
             <div className="mt-2 border-t border-white/5 pt-3">
               {authed && isAdmin ? (
                 <Link
-                  to={"/_authenticated/admin" as never}
+                  to="/admin"
                   onClick={() => setOpen(false)}
                   className="inline-flex items-center gap-2 rounded-full border border-electric/40 bg-electric/10 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-electric-glow"
                 >
