@@ -5,6 +5,9 @@ import { SiteShell } from "@/components/SiteShell";
 import { ArrowLeft, ShieldCheck, Loader2 } from "lucide-react";
 
 export const Route = createFileRoute("/auth")({
+  validateSearch: (s: Record<string, unknown>) => ({
+    next: typeof s.next === "string" ? s.next : "",
+  }),
   head: () => ({
     meta: [
       { title: "Connexion — BBH Association" },
@@ -15,34 +18,49 @@ export const Route = createFileRoute("/auth")({
   component: AuthPage,
 });
 
+function safeNext(next: string): string | null {
+  if (!next.startsWith("/") || next.startsWith("//")) return null;
+  return next;
+}
+
 function AuthPage() {
   const navigate = useNavigate();
+  const { next } = Route.useSearch();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [mode, setMode] = useState<"signin" | "signup">("signin");
 
+  const target = safeNext(next);
+
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
-      if (data.user) navigate({ to: "/admin" });
+      if (data.user) {
+        if (target) window.location.replace(target);
+        else navigate({ to: "/admin" });
+      }
     });
-  }, [navigate]);
+  }, [navigate, target]);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
     setLoading(true);
+    const emailRedirectTo = target
+      ? `${window.location.origin}${target}`
+      : window.location.origin;
     const fn = mode === "signin"
       ? supabase.auth.signInWithPassword({ email, password })
-      : supabase.auth.signUp({ email, password, options: { emailRedirectTo: window.location.origin } });
+      : supabase.auth.signUp({ email, password, options: { emailRedirectTo } });
     const { error } = await fn;
     setLoading(false);
     if (error) {
       setError(error.message);
       return;
     }
-    navigate({ to: "/admin" });
+    if (target) window.location.replace(target);
+    else navigate({ to: "/admin" });
   }
 
   return (
