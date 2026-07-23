@@ -355,19 +355,21 @@ function Toggle({ label, value, onChange }: { label: string; value: boolean; onC
   );
 }
 
-function UploadBlock({ label, preview, bucket, onPick, uploading }: { label: string; preview?: string | null; bucket: string; onPick: () => void; uploading: boolean }) {
+function UploadBlock({ label, helper, buttonLabel, preview, bucket, onPick, uploading }: { label: string; helper?: string; buttonLabel?: string; preview?: string | null; bucket: string; onPick: () => void; uploading: boolean }) {
   return (
     <div className="rounded-2xl border border-dashed border-white/15 bg-surface/30 p-5">
-      <div className="mb-2 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">{label}</div>
+      <div className="mb-1 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">{label}</div>
+      {helper && <div className="mb-2 text-[11px] text-muted-foreground/70">{helper}</div>}
       <div className="flex items-center justify-between gap-3">
         <div className="truncate text-xs text-muted-foreground">
           {preview ? `${bucket}/${preview}` : "Aucun fichier"}
         </div>
         <button type="button" onClick={onPick} disabled={uploading} className="inline-flex items-center gap-2 rounded-full border border-white/10 px-3 py-1.5 text-xs hover:bg-white/5 disabled:opacity-50">
           {uploading ? <Loader2 className="size-3.5 animate-spin" /> : <UploadCloud className="size-3.5" />}
-          Choisir un fichier
+          {buttonLabel ?? "Choisir un fichier"}
         </button>
       </div>
     </div>
   );
 }
+
