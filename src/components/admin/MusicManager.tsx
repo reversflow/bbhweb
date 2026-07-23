@@ -69,6 +69,19 @@ export function MusicManager() {
   }
 
   async function handleUpload(file: File, kind: "audio" | "cover") {
+    if (kind === "audio") {
+      const okType = file.type.startsWith("audio/");
+      const okExt = /\.(mp3|wav|flac|aac|ogg|oga|m4a)$/i.test(file.name);
+      if (!okType && !okExt) {
+        alert("Veuillez importer un fichier audio valide : MP3, WAV, FLAC, AAC ou OGG.");
+        return;
+      }
+    } else if (kind === "cover") {
+      if (!file.type.startsWith("image/")) {
+        alert("Veuillez importer une image valide (JPG, PNG, WEBP).");
+        return;
+      }
+    }
     setUploading(kind);
     try {
       const bucket = kind === "audio" ? "song-audio" : "song-artwork";
@@ -98,6 +111,7 @@ export function MusicManager() {
       setUploading(null);
     }
   }
+
 
   async function save() {
     if (!editing) return;
@@ -243,6 +257,8 @@ function SongForm({
       <div className="grid gap-4 md:grid-cols-2">
         <UploadBlock
           label="Pochette"
+          helper="Formats acceptés : JPG, PNG, WEBP"
+          buttonLabel="Choisir une image"
           preview={editing.cover_url}
           bucket="song-artwork"
           onPick={() => coverRef.current?.click()}
@@ -251,12 +267,18 @@ function SongForm({
         <input
           ref={coverRef}
           type="file"
-          accept="image/*"
+          accept="image/png,image/jpeg,image/webp,image/*"
           hidden
-          onChange={(e) => e.target.files?.[0] && onUpload(e.target.files[0], "cover")}
+          onChange={(e) => {
+            const f = e.target.files?.[0];
+            if (f) onUpload(f, "cover");
+            e.target.value = "";
+          }}
         />
         <UploadBlock
-          label="Fichier audio (MP3)"
+          label="Fichier audio"
+          helper="Formats acceptés : MP3, WAV, FLAC, AAC, OGG"
+          buttonLabel="Importer un fichier audio"
           preview={editing.audio_url}
           bucket="song-audio"
           onPick={() => audioRef.current?.click()}
@@ -265,11 +287,16 @@ function SongForm({
         <input
           ref={audioRef}
           type="file"
-          accept="audio/*"
+          accept="audio/mpeg,audio/mp3,audio/wav,audio/x-wav,audio/flac,audio/aac,audio/ogg,audio/*,.mp3,.wav,.flac,.aac,.ogg,.m4a"
           hidden
-          onChange={(e) => e.target.files?.[0] && onUpload(e.target.files[0], "audio")}
+          onChange={(e) => {
+            const f = e.target.files?.[0];
+            if (f) onUpload(f, "audio");
+            e.target.value = "";
+          }}
         />
       </div>
+
 
       <Field label="Description">
         <textarea rows={3} value={editing.description ?? ""} onChange={(e) => setEditing((s) => (s ? { ...s, description: e.target.value } : s))} className={fieldCls} />
@@ -328,19 +355,21 @@ function Toggle({ label, value, onChange }: { label: string; value: boolean; onC
   );
 }
 
-function UploadBlock({ label, preview, bucket, onPick, uploading }: { label: string; preview?: string | null; bucket: string; onPick: () => void; uploading: boolean }) {
+function UploadBlock({ label, helper, buttonLabel, preview, bucket, onPick, uploading }: { label: string; helper?: string; buttonLabel?: string; preview?: string | null; bucket: string; onPick: () => void; uploading: boolean }) {
   return (
     <div className="rounded-2xl border border-dashed border-white/15 bg-surface/30 p-5">
-      <div className="mb-2 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">{label}</div>
+      <div className="mb-1 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">{label}</div>
+      {helper && <div className="mb-2 text-[11px] text-muted-foreground/70">{helper}</div>}
       <div className="flex items-center justify-between gap-3">
         <div className="truncate text-xs text-muted-foreground">
           {preview ? `${bucket}/${preview}` : "Aucun fichier"}
         </div>
         <button type="button" onClick={onPick} disabled={uploading} className="inline-flex items-center gap-2 rounded-full border border-white/10 px-3 py-1.5 text-xs hover:bg-white/5 disabled:opacity-50">
           {uploading ? <Loader2 className="size-3.5 animate-spin" /> : <UploadCloud className="size-3.5" />}
-          Choisir un fichier
+          {buttonLabel ?? "Choisir un fichier"}
         </button>
       </div>
     </div>
   );
 }
+
