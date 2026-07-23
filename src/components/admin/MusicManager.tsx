@@ -257,6 +257,8 @@ function SongForm({
       <div className="grid gap-4 md:grid-cols-2">
         <UploadBlock
           label="Pochette"
+          helper="Formats acceptés : JPG, PNG, WEBP"
+          buttonLabel="Choisir une image"
           preview={editing.cover_url}
           bucket="song-artwork"
           onPick={() => coverRef.current?.click()}
@@ -265,12 +267,18 @@ function SongForm({
         <input
           ref={coverRef}
           type="file"
-          accept="image/*"
+          accept="image/png,image/jpeg,image/webp,image/*"
           hidden
-          onChange={(e) => e.target.files?.[0] && onUpload(e.target.files[0], "cover")}
+          onChange={(e) => {
+            const f = e.target.files?.[0];
+            if (f) onUpload(f, "cover");
+            e.target.value = "";
+          }}
         />
         <UploadBlock
-          label="Fichier audio (MP3)"
+          label="Fichier audio"
+          helper="Formats acceptés : MP3, WAV, FLAC, AAC, OGG"
+          buttonLabel="Importer un fichier audio"
           preview={editing.audio_url}
           bucket="song-audio"
           onPick={() => audioRef.current?.click()}
@@ -279,11 +287,16 @@ function SongForm({
         <input
           ref={audioRef}
           type="file"
-          accept="audio/*"
+          accept="audio/mpeg,audio/mp3,audio/wav,audio/x-wav,audio/flac,audio/aac,audio/ogg,audio/*,.mp3,.wav,.flac,.aac,.ogg,.m4a"
           hidden
-          onChange={(e) => e.target.files?.[0] && onUpload(e.target.files[0], "audio")}
+          onChange={(e) => {
+            const f = e.target.files?.[0];
+            if (f) onUpload(f, "audio");
+            e.target.value = "";
+          }}
         />
       </div>
+
 
       <Field label="Description">
         <textarea rows={3} value={editing.description ?? ""} onChange={(e) => setEditing((s) => (s ? { ...s, description: e.target.value } : s))} className={fieldCls} />
