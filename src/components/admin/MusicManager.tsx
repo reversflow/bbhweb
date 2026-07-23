@@ -69,6 +69,19 @@ export function MusicManager() {
   }
 
   async function handleUpload(file: File, kind: "audio" | "cover") {
+    if (kind === "audio") {
+      const okType = file.type.startsWith("audio/");
+      const okExt = /\.(mp3|wav|flac|aac|ogg|oga|m4a)$/i.test(file.name);
+      if (!okType && !okExt) {
+        alert("Veuillez importer un fichier audio valide : MP3, WAV, FLAC, AAC ou OGG.");
+        return;
+      }
+    } else if (kind === "cover") {
+      if (!file.type.startsWith("image/")) {
+        alert("Veuillez importer une image valide (JPG, PNG, WEBP).");
+        return;
+      }
+    }
     setUploading(kind);
     try {
       const bucket = kind === "audio" ? "song-audio" : "song-artwork";
@@ -98,6 +111,7 @@ export function MusicManager() {
       setUploading(null);
     }
   }
+
 
   async function save() {
     if (!editing) return;
