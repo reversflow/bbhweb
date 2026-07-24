@@ -4,6 +4,11 @@ import { SiteShell } from "@/components/SiteShell";
 import { ImageCard } from "@/components/ImageCard";
 import { CtaButton } from "@/components/CtaButton";
 import { SectionHeading } from "@/components/SectionHeading";
+import heroBbhLive from "@/assets/hero-bbh-live.jpg";
+import cardScenes from "@/assets/card-scenes.jpg";
+import cardAteliers from "@/assets/card-ateliers.jpg";
+import cardArtistes from "@/assets/card-artistes.jpg";
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
