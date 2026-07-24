@@ -217,6 +217,33 @@ export type Database = {
           },
         ]
       }
+      site_images: {
+        Row: {
+          alt_text: string
+          object_position: string
+          slot: string
+          storage_path: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          alt_text?: string
+          object_position?: string
+          slot: string
+          storage_path: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          alt_text?: string
+          object_position?: string
+          slot?: string
+          storage_path?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       songs: {
         Row: {
           artist_id: string
