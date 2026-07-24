@@ -4,6 +4,8 @@ import { SiteShell } from "@/components/SiteShell";
 import { SectionHeading } from "@/components/SectionHeading";
 import { CtaButton } from "@/components/CtaButton";
 import { ImageCard } from "@/components/ImageCard";
+import cardArtistes from "@/assets/card-artistes.jpg";
+
 
 export const Route = createFileRoute("/artistes")({
   head: () => ({
