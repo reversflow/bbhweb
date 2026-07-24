@@ -1,4 +1,6 @@
 import { cn } from "@/lib/utils";
+import { useSiteImage } from "@/hooks/use-site-images";
+import type { SiteImageSlot } from "@/lib/site-images.functions";
 
 interface ImageCardProps {
   label?: string;
@@ -15,6 +17,8 @@ interface ImageCardProps {
   imgClassName?: string;
   objectPosition?: string;
   eager?: boolean;
+  /** Optional CMS slot: overrides src/alt/objectPosition when a custom image exists. */
+  slot?: SiteImageSlot;
 }
 
 const toneMap: Record<NonNullable<ImageCardProps["tone"]>, string> = {
@@ -44,8 +48,13 @@ export function ImageCard({
   imgClassName,
   objectPosition = "center",
   eager = false,
+  slot,
 }: ImageCardProps) {
-  const hasImage = Boolean(src);
+  const cmsImage = useSiteImage(slot as SiteImageSlot);
+  const finalSrc = cmsImage?.url ?? src;
+  const finalAlt = cmsImage?.alt ?? alt;
+  const finalObjectPosition = cmsImage?.objectPosition ?? objectPosition;
+  const hasImage = Boolean(finalSrc);
   return (
     <div
       className={cn(
@@ -57,15 +66,15 @@ export function ImageCard({
       {/* editable image */}
       {hasImage && (
         <img
-          src={src}
-          alt={alt ?? title ?? label ?? ""}
+          src={finalSrc}
+          alt={finalAlt ?? title ?? label ?? ""}
           loading={eager ? "eager" : "lazy"}
           decoding="async"
           className={cn(
             "absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105",
             imgClassName,
           )}
-          style={{ objectPosition }}
+          style={{ objectPosition: finalObjectPosition }}
         />
       )}
 

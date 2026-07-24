@@ -83,7 +83,7 @@ function ArtistsPage() {
                 title=""
                 overlay={false}
                 className="rounded-none border-none"
-                src={cardArtistes}
+                slot="artist_reverseflow" src={cardArtistes}
                 alt={`Portrait de ${a.name}`}
               />
 

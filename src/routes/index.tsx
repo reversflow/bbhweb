@@ -103,7 +103,7 @@ function Home() {
                 subtitle="11 juin 2026 · Lille"
                 tone="mixed"
                 aspect="aspect-[4/5]"
-                src={heroBbhLive}
+                slot="home_hero" src={heroBbhLive}
                 alt="BBH LIVE — scène rap éclairée en bleu et violet"
                 eager
               />
@@ -127,7 +127,7 @@ function Home() {
               title="Scènes & showcases"
               tone="blue"
               aspect="aspect-[5/6]"
-              src={cardScenes}
+              slot="home_card_scenes" src={cardScenes}
               alt="Public d'un showcase BBH LIVE, mains levées sous les lumières bleues"
             />
             <ImageCard
@@ -135,7 +135,7 @@ function Home() {
               title="Écriture & studio"
               tone="red"
               aspect="aspect-[5/6]"
-              src={cardAteliers}
+              slot="home_card_ateliers" src={cardAteliers}
               alt="Séance d'écriture rap en studio, micro et carnet de textes"
             />
             <ImageCard
@@ -143,7 +143,7 @@ function Home() {
               title="Le roster"
               tone="purple"
               aspect="aspect-[5/6]"
-              src={cardArtistes}
+              slot="home_card_artistes" src={cardArtistes}
               alt="Portrait éditorial d'un artiste BBH sous une lumière violette"
             />
           </div>
