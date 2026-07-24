@@ -48,8 +48,13 @@ export function ImageCard({
   imgClassName,
   objectPosition = "center",
   eager = false,
+  slot,
 }: ImageCardProps) {
-  const hasImage = Boolean(src);
+  const cmsImage = useSiteImage(slot as SiteImageSlot);
+  const finalSrc = cmsImage?.url ?? src;
+  const finalAlt = cmsImage?.alt ?? alt;
+  const finalObjectPosition = cmsImage?.objectPosition ?? objectPosition;
+  const hasImage = Boolean(finalSrc);
   return (
     <div
       className={cn(
@@ -61,15 +66,15 @@ export function ImageCard({
       {/* editable image */}
       {hasImage && (
         <img
-          src={src}
-          alt={alt ?? title ?? label ?? ""}
+          src={finalSrc}
+          alt={finalAlt ?? title ?? label ?? ""}
           loading={eager ? "eager" : "lazy"}
           decoding="async"
           className={cn(
             "absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105",
             imgClassName,
           )}
-          style={{ objectPosition }}
+          style={{ objectPosition: finalObjectPosition }}
         />
       )}
 
