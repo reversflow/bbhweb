@@ -10,19 +10,25 @@ interface ImageCardProps {
   aspect?: string;
   overlay?: boolean;
   children?: React.ReactNode;
+  src?: string;
+  alt?: string;
+  imgClassName?: string;
+  objectPosition?: string;
+  eager?: boolean;
 }
 
 const toneMap: Record<NonNullable<ImageCardProps["tone"]>, string> = {
   blue: "from-electric/40 via-electric/10 to-transparent",
   red: "from-blood/40 via-blood/10 to-transparent",
   purple: "from-purple-glow/40 via-purple-glow/10 to-transparent",
-  mixed:
-    "from-electric/30 via-purple-glow/20 to-blood/30",
+  mixed: "from-electric/30 via-purple-glow/20 to-blood/30",
 };
 
 /**
- * Placeholder visual card — deep gradient + noise, ready to be swapped
- * with a real image later. Uses semantic tokens only.
+ * Visual card with an editable image. Provide `src` + `alt` to render a real
+ * image (object-cover, object-position center by default). Falls back to the
+ * original gradient placeholder when no `src` is provided. Images stay
+ * swappable via Lovable Visual Edits.
  */
 export function ImageCard({
   label,
@@ -33,7 +39,13 @@ export function ImageCard({
   aspect = "aspect-[4/5]",
   overlay = true,
   children,
+  src,
+  alt,
+  imgClassName,
+  objectPosition = "center",
+  eager = false,
 }: ImageCardProps) {
+  const hasImage = Boolean(src);
   return (
     <div
       className={cn(
@@ -42,15 +54,37 @@ export function ImageCard({
         className,
       )}
     >
-      {/* backdrop */}
+      {/* editable image */}
+      {hasImage && (
+        <img
+          src={src}
+          alt={alt ?? title ?? label ?? ""}
+          loading={eager ? "eager" : "lazy"}
+          decoding="async"
+          className={cn(
+            "absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105",
+            imgClassName,
+          )}
+          style={{ objectPosition }}
+        />
+      )}
+
+      {/* backdrop gradient — full color placeholder, subtle wash over image */}
       <div
         className={cn(
-          "absolute inset-0 bg-gradient-to-br opacity-90 transition-transform duration-700 group-hover:scale-105",
+          "absolute inset-0 bg-gradient-to-br transition-transform duration-700",
           toneMap[tone],
+          hasImage
+            ? "opacity-30 mix-blend-overlay"
+            : "opacity-90 group-hover:scale-105",
         )}
       />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,rgba(255,255,255,0.06),transparent_60%)]" />
-      <div className="noise absolute inset-0" />
+      {!hasImage && (
+        <>
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,rgba(255,255,255,0.06),transparent_60%)]" />
+          <div className="noise absolute inset-0" />
+        </>
+      )}
 
       {/* dark bottom overlay for legibility */}
       {overlay && (

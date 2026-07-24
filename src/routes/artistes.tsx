@@ -4,6 +4,8 @@ import { SiteShell } from "@/components/SiteShell";
 import { SectionHeading } from "@/components/SectionHeading";
 import { CtaButton } from "@/components/CtaButton";
 import { ImageCard } from "@/components/ImageCard";
+import cardArtistes from "@/assets/card-artistes.jpg";
+
 
 export const Route = createFileRoute("/artistes")({
   head: () => ({
@@ -81,7 +83,10 @@ function ArtistsPage() {
                 title=""
                 overlay={false}
                 className="rounded-none border-none"
+                src={cardArtistes}
+                alt={`Portrait de ${a.name}`}
               />
+
               <div className="flex flex-col justify-between p-6">
                 <div>
                   <span className="inline-flex items-center rounded-full border border-electric/30 bg-electric/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-electric-glow">
