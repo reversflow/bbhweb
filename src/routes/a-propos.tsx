@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Mic, Users, BookOpen, Radio } from "lucide-react";
 import { SiteShell } from "@/components/SiteShell";
+import { HeroBackdrop } from "@/components/HeroBackdrop";
 import { SectionHeading } from "@/components/SectionHeading";
 import { ImageCard } from "@/components/ImageCard";
 
@@ -48,6 +49,7 @@ function AboutPage() {
           className="absolute inset-0 -z-10"
           style={{ background: "var(--gradient-hero)" }}
         />
+        <HeroBackdrop slot="about_hero" />
         <div className="mx-auto grid max-w-7xl gap-12 px-6 pt-24 pb-20 md:grid-cols-[1.2fr_1fr] md:items-end md:pt-32">
           <div>
             <div className="text-xs font-semibold uppercase tracking-[0.25em] text-electric-glow">
@@ -73,6 +75,7 @@ function AboutPage() {
             subtitle="Base opérationnelle"
             tone="blue"
             aspect="aspect-[4/5]"
+            slot="about_vision"
           />
           <div>
             <SectionHeading

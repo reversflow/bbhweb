@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { ArrowRight, PenLine, Mic2, Sparkles, Compass } from "lucide-react";
 import { SiteShell } from "@/components/SiteShell";
+import { HeroBackdrop } from "@/components/HeroBackdrop";
 import { SectionHeading } from "@/components/SectionHeading";
 import { CtaButton } from "@/components/CtaButton";
 
@@ -85,6 +86,7 @@ function WorkshopsPage() {
           className="absolute inset-0 -z-10"
           style={{ background: "var(--gradient-hero)" }}
         />
+        <HeroBackdrop slot="workshops_hero" />
         <div className="mx-auto grid max-w-7xl gap-10 px-6 pt-24 pb-20 md:grid-cols-[1.2fr_1fr] md:items-end md:pt-32">
           <div>
             <div className="text-xs font-semibold uppercase tracking-[0.25em] text-electric-glow">

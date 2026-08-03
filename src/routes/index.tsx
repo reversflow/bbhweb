@@ -4,10 +4,6 @@ import { SiteShell } from "@/components/SiteShell";
 import { ImageCard } from "@/components/ImageCard";
 import { CtaButton } from "@/components/CtaButton";
 import { SectionHeading } from "@/components/SectionHeading";
-import heroBbhLive from "@/assets/hero-bbh-live.jpg";
-import cardScenes from "@/assets/card-scenes.jpg";
-import cardAteliers from "@/assets/card-ateliers.jpg";
-import cardArtistes from "@/assets/card-artistes.jpg";
 
 
 export const Route = createFileRoute("/")({
@@ -103,7 +99,7 @@ function Home() {
                 subtitle="11 juin 2026 · Lille"
                 tone="mixed"
                 aspect="aspect-[4/5]"
-                slot="home_hero" src={heroBbhLive}
+                slot="home_hero"
                 alt="BBH LIVE — scène rap éclairée en bleu et violet"
                 eager
               />
@@ -127,7 +123,7 @@ function Home() {
               title="Scènes & showcases"
               tone="blue"
               aspect="aspect-[5/6]"
-              slot="home_card_scenes" src={cardScenes}
+              slot="home_card_scenes"
               alt="Public d'un showcase BBH LIVE, mains levées sous les lumières bleues"
             />
             <ImageCard
@@ -135,7 +131,7 @@ function Home() {
               title="Écriture & studio"
               tone="red"
               aspect="aspect-[5/6]"
-              slot="home_card_ateliers" src={cardAteliers}
+              slot="home_card_ateliers"
               alt="Séance d'écriture rap en studio, micro et carnet de textes"
             />
             <ImageCard
@@ -143,7 +139,7 @@ function Home() {
               title="Le roster"
               tone="purple"
               aspect="aspect-[5/6]"
-              slot="home_card_artistes" src={cardArtistes}
+              slot="home_card_artistes"
               alt="Portrait éditorial d'un artiste BBH sous une lumière violette"
             />
           </div>

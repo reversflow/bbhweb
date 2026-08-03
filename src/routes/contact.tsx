@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { Mail, Instagram, MapPin, FileText, Send } from "lucide-react";
 import { SiteShell } from "@/components/SiteShell";
+import { HeroBackdrop } from "@/components/HeroBackdrop";
 import { CtaButton } from "@/components/CtaButton";
 
 export const Route = createFileRoute("/contact")({
@@ -43,6 +44,7 @@ function ContactPage() {
           className="absolute inset-0 -z-10"
           style={{ background: "var(--gradient-hero)" }}
         />
+        <HeroBackdrop slot="contact_hero" />
         <div className="mx-auto max-w-7xl px-6 pt-24 pb-16 md:pt-32">
           <div className="text-xs font-semibold uppercase tracking-[0.25em] text-electric-glow">
             On échange

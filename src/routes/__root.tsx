@@ -1,4 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { siteImagesQueryOptions } from "@/hooks/use-site-images";
 import {
   Outlet,
   Link,
@@ -110,7 +111,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
   }),
   shellComponent: RootShell,
+  loader: ({ context }) => {
+    // Prime the editable-media cache during SSR so images render in the
+    // first HTML payload (no flash, better LCP).
+    context.queryClient.ensureQueryData(siteImagesQueryOptions);
+  },
   component: RootComponent,
+
   notFoundComponent: NotFoundComponent,
   errorComponent: ErrorComponent,
 });

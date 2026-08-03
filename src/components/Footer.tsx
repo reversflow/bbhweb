@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import { BrandLogo } from "@/components/BrandLogo";
 import { Instagram, Youtube, Music2, Mail } from "lucide-react";
 
 const groups = [
@@ -20,7 +21,7 @@ export function Footer() {
     <footer className="mt-32 border-t border-white/5 bg-background">
       <div className="mx-auto grid max-w-7xl gap-12 px-6 py-16 md:grid-cols-[2fr_1fr_1fr]">
         <div>
-          <div className="font-display text-4xl font-black tracking-tighter">BBH</div>
+          <div><BrandLogo className="text-4xl" imgClassName="h-12" /></div>
           <p className="mt-3 max-w-sm text-lg font-medium text-foreground">
             All for the culture.
           </p>

@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { ArrowRight, Calendar, MapPin, Users, Music, Heart } from "lucide-react";
 import { SiteShell } from "@/components/SiteShell";
+import { HeroBackdrop } from "@/components/HeroBackdrop";
 import { ImageCard } from "@/components/ImageCard";
 import { SectionHeading } from "@/components/SectionHeading";
 import { CtaButton } from "@/components/CtaButton";
@@ -76,6 +77,7 @@ function EventsPage() {
           className="absolute inset-0 -z-10"
           style={{ background: "var(--gradient-hero)" }}
         />
+        <HeroBackdrop slot="events_hero" />
         <div className="mx-auto max-w-7xl px-6 pt-24 pb-20 md:pt-32">
           <div className="text-xs font-semibold uppercase tracking-[0.25em] text-electric-glow">
             Programmation
@@ -98,6 +100,7 @@ function EventsPage() {
             subtitle="Concept signature"
             tone="mixed"
             aspect="aspect-[4/5]"
+            slot="events_featured_bbhlive"
           />
           <div>
             <SectionHeading
@@ -121,7 +124,7 @@ function EventsPage() {
       <section className="mx-auto max-w-7xl px-6 pb-24">
         <SectionHeading eyebrow="À venir" title="Prochains événements" />
         <div className="mt-12 grid gap-6 md:grid-cols-2">
-          {upcoming.map((e) => (
+          {upcoming.map((e, i) => (
             <article
               key={e.title}
               className="group overflow-hidden rounded-3xl border border-white/10 bg-surface card-hover"
@@ -133,6 +136,8 @@ function EventsPage() {
                 title=""
                 overlay={false}
                 className="rounded-none border-none"
+                slot={`events_upcoming_${i + 1}`}
+                alt={`${e.title} — ${e.location}`}
               />
               <div className="p-7">
                 <div className="flex flex-wrap items-center gap-4 text-xs uppercase tracking-[0.18em] text-muted-foreground">
@@ -162,13 +167,15 @@ function EventsPage() {
       <section className="mx-auto max-w-7xl px-6 pb-24">
         <SectionHeading eyebrow="Archives" title="Événements passés" />
         <div className="mt-12 grid gap-5 md:grid-cols-3">
-          {past.map((p) => (
+          {past.map((p, i) => (
             <ImageCard
               key={p.title}
               label="Passé"
               title={p.title}
               tone={p.tone}
               aspect="aspect-[4/5]"
+              slot={`events_past_${i + 1}`}
+              alt={`${p.title} — événement passé de BBH Association`}
             />
           ))}
         </div>

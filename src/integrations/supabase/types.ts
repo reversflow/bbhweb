@@ -220,25 +220,37 @@ export type Database = {
       site_images: {
         Row: {
           alt_text: string
+          caption: string
           object_position: string
+          page_key: string
+          section_key: string
           slot: string
           storage_path: string
+          title: string
           updated_at: string
           updated_by: string | null
         }
         Insert: {
           alt_text?: string
+          caption?: string
           object_position?: string
+          page_key?: string
+          section_key?: string
           slot: string
           storage_path: string
+          title?: string
           updated_at?: string
           updated_by?: string | null
         }
         Update: {
           alt_text?: string
+          caption?: string
           object_position?: string
+          page_key?: string
+          section_key?: string
           slot?: string
           storage_path?: string
+          title?: string
           updated_at?: string
           updated_by?: string | null
         }

@@ -1,10 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Instagram, Music2, Youtube, MapPin, ArrowRight } from "lucide-react";
 import { SiteShell } from "@/components/SiteShell";
+import { HeroBackdrop } from "@/components/HeroBackdrop";
 import { SectionHeading } from "@/components/SectionHeading";
 import { CtaButton } from "@/components/CtaButton";
 import { ImageCard } from "@/components/ImageCard";
-import cardArtistes from "@/assets/card-artistes.jpg";
 
 
 export const Route = createFileRoute("/artistes")({
@@ -48,6 +48,7 @@ function ArtistsPage() {
           className="absolute inset-0 -z-10"
           style={{ background: "var(--gradient-hero)" }}
         />
+        <HeroBackdrop slot="artists_hero" />
         <div className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 select-none overflow-hidden">
           <div className="whitespace-nowrap text-center font-display text-[16vw] font-black leading-[0.8] tracking-tighter text-white/[0.04]">
             ROSTER
@@ -83,7 +84,7 @@ function ArtistsPage() {
                 title=""
                 overlay={false}
                 className="rounded-none border-none"
-                slot="artist_reverseflow" src={cardArtistes}
+                slot="artist_reverseflow"
                 alt={`Portrait de ${a.name}`}
               />
 
