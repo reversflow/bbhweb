@@ -1,3 +1,4 @@
+import { BrandLogo } from "@/components/BrandLogo";
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Menu, X, ShieldCheck, LogIn } from "lucide-react";
@@ -32,9 +33,7 @@ export function Navbar() {
     <header className="sticky top-0 z-50 border-b border-white/5 bg-background/70 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
         <Link to="/" className="group flex items-center gap-2" onClick={() => setOpen(false)}>
-          <span className="font-display text-2xl font-black tracking-tighter">
-            BBH
-          </span>
+          <BrandLogo className="text-2xl" imgClassName="h-8" />
           <span className="hidden text-[10px] font-medium uppercase tracking-[0.25em] text-muted-foreground sm:inline">
             Association
           </span>
