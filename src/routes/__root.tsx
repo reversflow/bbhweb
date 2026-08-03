@@ -110,7 +110,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
   }),
   shellComponent: RootShell,
+  loader: ({ context }) => {
+    // Prime the editable-media cache during SSR so images render in the
+    // first HTML payload (no flash, better LCP).
+    context.queryClient.ensureQueryData(siteImagesQueryOptions);
+  },
   component: RootComponent,
+
   notFoundComponent: NotFoundComponent,
   errorComponent: ErrorComponent,
 });
