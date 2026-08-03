@@ -1,3 +1,4 @@
+import { optimizeImage } from "@/lib/image-optimize";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
