@@ -1,4 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { siteImagesQueryOptions } from "@/hooks/use-site-images";
 import {
   Outlet,
   Link,
