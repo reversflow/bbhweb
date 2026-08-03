@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { SiteShell } from "@/components/SiteShell";
+import { HeroBackdrop } from "@/components/HeroBackdrop";
 import { useSignedUrl } from "@/hooks/use-signed-url";
 
 export const Route = createFileRoute("/journal")({
@@ -41,7 +42,9 @@ function JournalIndex() {
 
   return (
     <SiteShell>
-      <div className="mx-auto max-w-7xl px-6 pb-8 pt-16">
+      <div className="relative overflow-hidden">
+        <HeroBackdrop slot="journal_hero" />
+        <div className="mx-auto max-w-7xl px-6 pb-8 pt-16">
         <p className="text-[11px] font-semibold uppercase tracking-[0.35em] text-electric-glow">Reverseflow · Journal</p>
         <h1 className="mt-3 font-display text-5xl font-black leading-[0.95] tracking-tighter sm:text-7xl">
           Le carnet de<br /><span className="italic text-muted-foreground">bord.</span>
@@ -49,6 +52,7 @@ function JournalIndex() {
         <p className="mt-4 max-w-2xl text-sm text-muted-foreground sm:text-base">
           Sessions studio, coulisses, dates, inspirations et sorties. Le journal d'artiste en accès libre.
         </p>
+        </div>
       </div>
 
       <div className="mx-auto max-w-7xl px-6 py-8">

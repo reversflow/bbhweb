@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { SiteShell } from "@/components/SiteShell";
+import { HeroBackdrop } from "@/components/HeroBackdrop";
 import { usePlayer, formatTime } from "@/contexts/player-context";
 import { useSignedUrl } from "@/hooks/use-signed-url";
 import { Play, Pause, Disc3, ExternalLink } from "lucide-react";
@@ -55,8 +56,9 @@ function MusicPage() {
 
   return (
     <SiteShell>
-      <div className="border-b border-white/5 bg-[radial-gradient(ellipse_80%_50%_at_20%_0%,oklch(0.72_0.22_250/0.18),transparent_60%),radial-gradient(ellipse_60%_50%_at_100%_20%,oklch(0.62_0.24_25/0.15),transparent_65%)]">
-        <div className="mx-auto max-w-7xl px-6 pb-6 pt-16">
+      <div className="relative overflow-hidden border-b border-white/5 bg-[radial-gradient(ellipse_80%_50%_at_20%_0%,oklch(0.72_0.22_250/0.18),transparent_60%),radial-gradient(ellipse_60%_50%_at_100%_20%,oklch(0.62_0.24_25/0.15),transparent_65%)]">
+        <HeroBackdrop slot="music_hero" />
+        <div className="relative mx-auto max-w-7xl px-6 pb-6 pt-16">
           <div className="flex items-baseline justify-between">
             <div>
               <p className="text-[11px] font-semibold uppercase tracking-[0.35em] text-electric-glow">

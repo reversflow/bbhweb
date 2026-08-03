@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
-import { useSiteImage } from "@/hooks/use-site-images";
-import type { SiteImageSlot } from "@/lib/site-images.functions";
+import { useMedia } from "@/hooks/use-site-images";
+
 
 interface ImageCardProps {
   label?: string;
@@ -18,7 +18,7 @@ interface ImageCardProps {
   objectPosition?: string;
   eager?: boolean;
   /** Optional CMS slot: overrides src/alt/objectPosition when a custom image exists. */
-  slot?: SiteImageSlot;
+  slot?: string;
 }
 
 const toneMap: Record<NonNullable<ImageCardProps["tone"]>, string> = {
@@ -50,10 +50,10 @@ export function ImageCard({
   eager = false,
   slot,
 }: ImageCardProps) {
-  const cmsImage = useSiteImage(slot as SiteImageSlot);
-  const finalSrc = cmsImage?.url ?? src;
-  const finalAlt = cmsImage?.alt ?? alt;
-  const finalObjectPosition = cmsImage?.objectPosition ?? objectPosition;
+  const media = useMedia(slot, { src, alt });
+  const finalSrc = media.src;
+  const finalAlt = media.alt;
+  const finalObjectPosition = slot && media.custom ? media.objectPosition : objectPosition;
   const hasImage = Boolean(finalSrc);
   return (
     <div

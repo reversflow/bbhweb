@@ -22,6 +22,7 @@ import { Route as AProposRouteImport } from './routes/a-propos'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as MusiqueSlugRouteImport } from './routes/musique.$slug'
+import { Route as MediaSplatRouteImport } from './routes/media.$'
 import { Route as JournalSlugRouteImport } from './routes/journal.$slug'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
@@ -93,6 +94,11 @@ const MusiqueSlugRoute = MusiqueSlugRouteImport.update({
   path: '/$slug',
   getParentRoute: () => MusiqueRoute,
 } as any)
+const MediaSplatRoute = MediaSplatRouteImport.update({
+  id: '/media/$',
+  path: '/media/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const JournalSlugRoute = JournalSlugRouteImport.update({
   id: '/$slug',
   path: '/$slug',
@@ -143,6 +149,7 @@ export interface FileRoutesByFullPath {
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/journal/$slug': typeof JournalSlugRoute
+  '/media/$': typeof MediaSplatRoute
   '/musique/$slug': typeof MusiqueSlugRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
@@ -163,6 +170,7 @@ export interface FileRoutesByTo {
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/journal/$slug': typeof JournalSlugRoute
+  '/media/$': typeof MediaSplatRoute
   '/musique/$slug': typeof MusiqueSlugRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
@@ -185,6 +193,7 @@ export interface FileRoutesById {
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/journal/$slug': typeof JournalSlugRoute
+  '/media/$': typeof MediaSplatRoute
   '/musique/$slug': typeof MusiqueSlugRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
@@ -207,6 +216,7 @@ export interface FileRouteTypes {
     | '/.well-known/oauth-protected-resource'
     | '/admin'
     | '/journal/$slug'
+    | '/media/$'
     | '/musique/$slug'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
@@ -227,6 +237,7 @@ export interface FileRouteTypes {
     | '/.well-known/oauth-protected-resource'
     | '/admin'
     | '/journal/$slug'
+    | '/media/$'
     | '/musique/$slug'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
@@ -248,6 +259,7 @@ export interface FileRouteTypes {
     | '/.well-known/oauth-protected-resource'
     | '/_authenticated/admin'
     | '/journal/$slug'
+    | '/media/$'
     | '/musique/$slug'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
@@ -268,6 +280,7 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  MediaSplatRoute: typeof MediaSplatRoute
   DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
   Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
 }
@@ -365,6 +378,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MusiqueSlugRouteImport
       parentRoute: typeof MusiqueRoute
     }
+    '/media/$': {
+      id: '/media/$'
+      path: '/media/$'
+      fullPath: '/media/$'
+      preLoaderRoute: typeof MediaSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/journal/$slug': {
       id: '/journal/$slug'
       path: '/$slug'
@@ -459,19 +479,10 @@ const rootRouteChildren: RootRouteChildren = {
   Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,
   Char91DotwellKnownChar93OauthProtectedResourceRoute:
     Char91DotwellKnownChar93OauthProtectedResourceRoute,
+  MediaSplatRoute: MediaSplatRoute,
   DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
   Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

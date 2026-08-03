@@ -6,7 +6,7 @@ import { useIsAdmin } from "@/hooks/use-admin";
 import { MusicManager } from "@/components/admin/MusicManager";
 import { JournalManager } from "@/components/admin/JournalManager";
 import { CommentsManager } from "@/components/admin/CommentsManager";
-import { SiteImagesManager } from "@/components/admin/SiteImagesManager";
+import { MediaManager } from "@/components/admin/MediaManager";
 import { getAdminStats } from "@/lib/music.functions";
 import { LogOut, Music, BookOpen, MessageCircle, LayoutDashboard, ShieldAlert, ArrowLeft, ImageIcon } from "lucide-react";
 
@@ -128,7 +128,7 @@ function AdminPage() {
           {tab === "music" && <MusicManager />}
           {tab === "journal" && <JournalManager />}
           {tab === "comments" && <CommentsManager />}
-          {tab === "images" && <SiteImagesManager />}
+          {tab === "images" && <MediaManager />}
         </div>
       </div>
     </SiteShell>
