@@ -219,12 +219,14 @@ function SlotCard({
     setBusy("upload");
     setProgress(0);
     try {
-      const ext = (f.name.split(".").pop() ?? "jpg").toLowerCase().replace(/[^a-z0-9]/g, "");
+      const optimized = await optimizeImage(f);
+      const ext = (optimized.name.split(".").pop() ?? "jpg").toLowerCase().replace(/[^a-z0-9]/g, "");
       const path = `${def.slot}/${crypto.randomUUID()}.${ext || "jpg"}`;
       const { signedUrl } = await createSiteImageUploadUrl({ data: { path } });
-      await uploadWithProgress(signedUrl, f);
+      await uploadWithProgress(signedUrl, optimized);
       setPendingPath(path);
-      setPreviewUrl(URL.createObjectURL(f));
+      setPreviewUrl(URL.createObjectURL(optimized));
+
       toast.success("Image envoyée. Clique sur Enregistrer pour l'appliquer.");
     } catch (e) {
       toast.error("Échec de l'envoi : " + (e as Error).message);
