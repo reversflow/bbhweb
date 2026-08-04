@@ -1,6 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { siteImagesQueryOptions } from "@/hooks/use-site-images";
-import { seoQueryOptions } from "@/hooks/use-seo";
+import { seoQueryOptions, type SeoConfig } from "@/hooks/use-seo";
 import { organizationJsonLd, websiteJsonLd } from "@/lib/seo";
 
 import {
