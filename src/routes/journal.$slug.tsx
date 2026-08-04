@@ -1,4 +1,4 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { createFileRoute, notFound } from "@tanstack/react-router";
 import { SiteShell } from "@/components/SiteShell";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { useSignedUrl } from "@/hooks/use-signed-url";
@@ -94,7 +94,7 @@ function JournalPost() {
 
         {url && (
           <div className="mt-8 overflow-hidden rounded-2xl border border-white/10">
-            <img src={url} alt="" className="w-full object-cover" />
+            <img src={url} alt={`Illustration — ${post.title}`} loading="lazy" decoding="async" className="w-full object-cover" />
           </div>
         )}
         <div className="prose prose-invert mt-10 max-w-none whitespace-pre-line text-[17px] leading-8 text-foreground/90">
