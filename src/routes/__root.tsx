@@ -76,51 +76,70 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
 }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
-  head: () => ({
-    meta: [
+  head: ({ loaderData }) => {
+    const settings = loaderData?.settings;
+    const meta: Array<Record<string, unknown>> = [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { name: "theme-color", content: "#0a0a0f" },
+      { name: "author", content: settings?.siteName ?? "BBH Association" },
+      { property: "og:site_name", content: settings?.siteName ?? "BBH Association" },
+      { property: "og:locale", content: "fr_FR" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: "BBH Association — Élever la culture urbaine" },
       {
         name: "description",
         content:
+          settings?.defaultDescription ??
           "BBH Association crée des événements, ateliers et projets culturels autour du rap et de la musique en Hauts-de-France.",
       },
-      { name: "author", content: "BBH Association" },
-      { property: "og:title", content: "BBH Association — Élever la culture urbaine" },
-      {
-        property: "og:description",
-        content: "BBH Association crée des événements, ateliers et projets culturels autour du rap et de la musique en Hauts-de-France.",
-      },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "BBH Association — Élever la culture urbaine" },
-      { name: "twitter:description", content: "BBH Association crée des événements, ateliers et projets culturels autour du rap et de la musique en Hauts-de-France." },
-      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/X2BXKdzMFfcdJAZIM2uxvyYnkL52/social-images/social-1784205769623-BBH_LOGO_VEC.webp" },
-      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/X2BXKdzMFfcdJAZIM2uxvyYnkL52/social-images/social-1784205769623-BBH_LOGO_VEC.webp" },
-    ],
-    links: [
-      { rel: "stylesheet", href: appCss },
-      { rel: "preconnect", href: "https://fonts.googleapis.com" },
-      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      {
-        rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap",
-      },
-    ],
-  }),
+    ];
+    if (settings?.googleSiteVerification) {
+      meta.push({ name: "google-site-verification", content: settings.googleSiteVerification });
+    }
+    if (settings?.bingSiteVerification) {
+      meta.push({ name: "msvalidate.01", content: settings.bingSiteVerification });
+    }
+
+    return {
+      meta,
+      links: [
+        { rel: "stylesheet", href: appCss },
+        { rel: "preconnect", href: "https://fonts.googleapis.com" },
+        { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
+        {
+          rel: "stylesheet",
+          href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap",
+        },
+      ],
+      scripts: settings
+        ? [
+            {
+              type: "application/ld+json",
+              children: JSON.stringify(organizationJsonLd(settings)),
+            },
+            {
+              type: "application/ld+json",
+              children: JSON.stringify(websiteJsonLd(settings)),
+            },
+          ]
+        : [],
+    };
+  },
   shellComponent: RootShell,
-  loader: ({ context }) => {
+  loader: async ({ context }) => {
     // Prime the editable-media cache during SSR so images render in the
     // first HTML payload (no flash, better LCP).
     context.queryClient.ensureQueryData(siteImagesQueryOptions);
+    return context.queryClient.ensureQueryData(seoQueryOptions);
   },
   component: RootComponent,
 
   notFoundComponent: NotFoundComponent,
   errorComponent: ErrorComponent,
 });
+
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
