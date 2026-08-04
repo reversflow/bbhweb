@@ -1,8 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { seoQueryOptions, type SeoConfig } from "@/hooks/use-seo";
-import { pageHead, breadcrumbJsonLd } from "@/lib/seo";
-import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { pageHead, breadcrumbJsonLd, absoluteUrl } from "@/lib/seo";
+import { listPublicSongs, type PublicSong } from "@/lib/content.functions";
 import { SiteShell } from "@/components/SiteShell";
 import { HeroBackdrop } from "@/components/HeroBackdrop";
 import { usePlayer, formatTime } from "@/contexts/player-context";
@@ -11,48 +10,51 @@ import { Play, Pause, Disc3, ExternalLink } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/musique")({
-  loader: ({ context }) => context.queryClient.ensureQueryData(seoQueryOptions),
+  loader: async ({ context }) => {
+    const [seo, songs] = await Promise.all([
+      context.queryClient.ensureQueryData(seoQueryOptions),
+      listPublicSongs(),
+    ]);
+    return { seo: seo as SeoConfig, songs };
+  },
   head: ({ loaderData }) => {
-    const cfg = loaderData as SeoConfig | undefined;
+    const cfg = loaderData?.seo;
     const base = cfg?.settings.baseUrl ?? "";
+    const songs = loaderData?.songs ?? [];
     return pageHead(cfg, "music", {
       path: "/musique",
-      jsonLd: [breadcrumbJsonLd(base, [{ name: "Accueil", path: "/" }, { name: "Musique", path: "/musique" }])],
+      jsonLd: [
+        breadcrumbJsonLd(base, [
+          { name: "Accueil", path: "/" },
+          { name: "Musique", path: "/musique" },
+        ]),
+        {
+          "@context": "https://schema.org",
+          "@type": "MusicGroup",
+          name: "REVERSEFLOW",
+          url: absoluteUrl(base, "/musique"),
+          genre: ["Rap", "Trap"],
+          track: songs.slice(0, 30).map((s) => ({
+            "@type": "MusicRecording",
+            name: s.title,
+            url: absoluteUrl(base, `/musique/${s.slug}`),
+          })),
+        },
+      ],
     });
   },
   component: MusicPage,
 });
 
-type Song = {
-  id: string;
-  slug: string;
-  title: string;
-  description: string | null;
-  genres: string[];
-  duration_seconds: number | null;
-  release_date: string | null;
-  cover_url: string | null;
-  audio_url: string | null;
-  featured: boolean;
-  streaming_links: Record<string, string> | null;
-};
+type Song = PublicSong;
 
 function MusicPage() {
-  const [songs, setSongs] = useState<Song[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { songs: allSongs } = Route.useLoaderData() as { songs: Song[] };
+  const loading = false;
+  const songs = [...allSongs].sort(
+    (a, b) => Number(b.featured) - Number(a.featured),
+  );
 
-  useEffect(() => {
-    (async () => {
-      const { data } = await supabase
-        .from("songs")
-        .select("id, slug, title, description, genres, duration_seconds, release_date, cover_url, audio_url, featured, streaming_links")
-        .eq("published", true)
-        .order("featured", { ascending: false })
-        .order("release_date", { ascending: false });
-      setSongs((data ?? []) as Song[]);
-      setLoading(false);
-    })();
-  }, []);
 
   const featured = songs.find((s) => s.featured) ?? songs[0];
   const rest = songs.filter((s) => s.id !== featured?.id);
