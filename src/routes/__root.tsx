@@ -80,7 +80,8 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
   head: ({ loaderData }) => {
-    const settings = loaderData?.settings;
+    const settings = (loaderData as SeoConfig | undefined)?.settings;
+
     const meta: Array<Record<string, unknown>> = [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
