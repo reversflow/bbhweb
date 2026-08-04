@@ -7,8 +7,9 @@ import { MusicManager } from "@/components/admin/MusicManager";
 import { JournalManager } from "@/components/admin/JournalManager";
 import { CommentsManager } from "@/components/admin/CommentsManager";
 import { MediaManager } from "@/components/admin/MediaManager";
+import { SeoManager } from "@/components/admin/SeoManager";
 import { getAdminStats } from "@/lib/music.functions";
-import { LogOut, Music, BookOpen, MessageCircle, LayoutDashboard, ShieldAlert, ArrowLeft, ImageIcon } from "lucide-react";
+import { LogOut, Music, BookOpen, MessageCircle, LayoutDashboard, ShieldAlert, ArrowLeft, ImageIcon, Search } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({
@@ -20,7 +21,7 @@ export const Route = createFileRoute("/_authenticated/admin")({
   component: AdminPage,
 });
 
-type Tab = "dashboard" | "music" | "journal" | "comments" | "images";
+type Tab = "dashboard" | "music" | "journal" | "comments" | "images" | "seo";
 
 function AdminPage() {
   const navigate = useNavigate();
@@ -121,6 +122,9 @@ function AdminPage() {
           <TabBtn active={tab === "images"} onClick={() => setTab("images")} icon={<ImageIcon className="size-4" />}>
             Site Images
           </TabBtn>
+          <TabBtn active={tab === "seo"} onClick={() => setTab("seo")} icon={<Search className="size-4" />}>
+            SEO
+          </TabBtn>
         </div>
 
         <div className="mt-8">
@@ -129,6 +133,7 @@ function AdminPage() {
           {tab === "journal" && <JournalManager />}
           {tab === "comments" && <CommentsManager />}
           {tab === "images" && <MediaManager />}
+          {tab === "seo" && <SeoManager />}
         </div>
       </div>
     </SiteShell>

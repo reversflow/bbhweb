@@ -217,6 +217,60 @@ export type Database = {
           },
         ]
       }
+      seo_pages: {
+        Row: {
+          ai_summary: string
+          changefreq: string
+          created_at: string
+          description: string
+          keywords: string[]
+          label: string
+          noindex: boolean
+          og_description: string
+          og_title: string
+          page_key: string
+          path: string
+          priority: number
+          sort_order: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          ai_summary?: string
+          changefreq?: string
+          created_at?: string
+          description?: string
+          keywords?: string[]
+          label?: string
+          noindex?: boolean
+          og_description?: string
+          og_title?: string
+          page_key: string
+          path: string
+          priority?: number
+          sort_order?: number
+          title?: string
+          updated_at?: string
+        }
+        Update: {
+          ai_summary?: string
+          changefreq?: string
+          created_at?: string
+          description?: string
+          keywords?: string[]
+          label?: string
+          noindex?: boolean
+          og_description?: string
+          og_title?: string
+          page_key?: string
+          path?: string
+          priority?: number
+          sort_order?: number
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       site_images: {
         Row: {
           alt_text: string
@@ -253,6 +307,66 @@ export type Database = {
           title?: string
           updated_at?: string
           updated_by?: string | null
+        }
+        Relationships: []
+      }
+      site_settings: {
+        Row: {
+          ai_summary: string
+          base_url: string
+          bing_site_verification: string
+          contact_email: string
+          country: string
+          created_at: string
+          default_description: string
+          google_site_verification: string
+          id: number
+          keywords: string[]
+          locality: string
+          region: string
+          site_name: string
+          social_links: Json
+          tagline: string
+          twitter_handle: string
+          updated_at: string
+        }
+        Insert: {
+          ai_summary?: string
+          base_url?: string
+          bing_site_verification?: string
+          contact_email?: string
+          country?: string
+          created_at?: string
+          default_description?: string
+          google_site_verification?: string
+          id?: number
+          keywords?: string[]
+          locality?: string
+          region?: string
+          site_name?: string
+          social_links?: Json
+          tagline?: string
+          twitter_handle?: string
+          updated_at?: string
+        }
+        Update: {
+          ai_summary?: string
+          base_url?: string
+          bing_site_verification?: string
+          contact_email?: string
+          country?: string
+          created_at?: string
+          default_description?: string
+          google_site_verification?: string
+          id?: number
+          keywords?: string[]
+          locality?: string
+          region?: string
+          site_name?: string
+          social_links?: Json
+          tagline?: string
+          twitter_handle?: string
+          updated_at?: string
         }
         Relationships: []
       }

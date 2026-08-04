@@ -1,4 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { seoQueryOptions, type SeoConfig } from "@/hooks/use-seo";
+import { pageHead, breadcrumbJsonLd } from "@/lib/seo";
 import { ArrowRight, Sparkles, Users, Mic, Calendar, Radio } from "lucide-react";
 import { SiteShell } from "@/components/SiteShell";
 import { ImageCard } from "@/components/ImageCard";
@@ -7,22 +9,15 @@ import { SectionHeading } from "@/components/SectionHeading";
 
 
 export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "BBH Association — Élever la culture urbaine" },
-      {
-        name: "description",
-        content:
-          "BBH Association crée des événements, ateliers et projets culturels autour du rap et de la musique en Hauts-de-France.",
-      },
-      { property: "og:title", content: "BBH Association — Élever la culture urbaine" },
-      {
-        property: "og:description",
-        content:
-          "BBH Association crée des événements, ateliers et projets culturels autour du rap et de la musique en Hauts-de-France.",
-      },
-    ],
-  }),
+  loader: ({ context }) => context.queryClient.ensureQueryData(seoQueryOptions),
+  head: ({ loaderData }) => {
+    const cfg = loaderData as SeoConfig | undefined;
+    const base = cfg?.settings.baseUrl ?? "";
+    return pageHead(cfg, "home", {
+      path: "/",
+      jsonLd: [breadcrumbJsonLd(base, [{ name: "Accueil", path: "/" }])],
+    });
+  },
   component: Home,
 });
 

@@ -24,6 +24,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as MusiqueSlugRouteImport } from './routes/musique.$slug'
 import { Route as MediaSplatRouteImport } from './routes/media.$'
 import { Route as JournalSlugRouteImport } from './routes/journal.$slug'
+import { Route as CoverSplatRouteImport } from './routes/cover.$'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
@@ -104,6 +105,11 @@ const JournalSlugRoute = JournalSlugRouteImport.update({
   path: '/$slug',
   getParentRoute: () => JournalRoute,
 } as any)
+const CoverSplatRoute = CoverSplatRouteImport.update({
+  id: '/cover/$',
+  path: '/cover/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -148,6 +154,7 @@ export interface FileRoutesByFullPath {
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/cover/$': typeof CoverSplatRoute
   '/journal/$slug': typeof JournalSlugRoute
   '/media/$': typeof MediaSplatRoute
   '/musique/$slug': typeof MusiqueSlugRoute
@@ -169,6 +176,7 @@ export interface FileRoutesByTo {
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/cover/$': typeof CoverSplatRoute
   '/journal/$slug': typeof JournalSlugRoute
   '/media/$': typeof MediaSplatRoute
   '/musique/$slug': typeof MusiqueSlugRoute
@@ -192,6 +200,7 @@ export interface FileRoutesById {
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
+  '/cover/$': typeof CoverSplatRoute
   '/journal/$slug': typeof JournalSlugRoute
   '/media/$': typeof MediaSplatRoute
   '/musique/$slug': typeof MusiqueSlugRoute
@@ -215,6 +224,7 @@ export interface FileRouteTypes {
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/admin'
+    | '/cover/$'
     | '/journal/$slug'
     | '/media/$'
     | '/musique/$slug'
@@ -236,6 +246,7 @@ export interface FileRouteTypes {
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/admin'
+    | '/cover/$'
     | '/journal/$slug'
     | '/media/$'
     | '/musique/$slug'
@@ -258,6 +269,7 @@ export interface FileRouteTypes {
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/_authenticated/admin'
+    | '/cover/$'
     | '/journal/$slug'
     | '/media/$'
     | '/musique/$slug'
@@ -280,6 +292,7 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  CoverSplatRoute: typeof CoverSplatRoute
   MediaSplatRoute: typeof MediaSplatRoute
   DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
   Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
@@ -392,6 +405,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof JournalSlugRouteImport
       parentRoute: typeof JournalRoute
     }
+    '/cover/$': {
+      id: '/cover/$'
+      path: '/cover/$'
+      fullPath: '/cover/$'
+      preLoaderRoute: typeof CoverSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/admin': {
       id: '/_authenticated/admin'
       path: '/admin'
@@ -479,6 +499,7 @@ const rootRouteChildren: RootRouteChildren = {
   Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,
   Char91DotwellKnownChar93OauthProtectedResourceRoute:
     Char91DotwellKnownChar93OauthProtectedResourceRoute,
+  CoverSplatRoute: CoverSplatRoute,
   MediaSplatRoute: MediaSplatRoute,
   DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
   Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,

@@ -1,2 +1,30 @@
 User-agent: *
 Allow: /
+
+# Espaces privés / techniques
+Disallow: /admin
+Disallow: /auth
+Disallow: /api/
+Disallow: /.mcp/
+Disallow: /mcp
+
+# Moteurs de réponse IA
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+Sitemap: https://bbhweb.lovable.app/sitemap.xml

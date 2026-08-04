@@ -1,4 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { seoQueryOptions, type SeoConfig } from "@/hooks/use-seo";
+import { pageHead, breadcrumbJsonLd } from "@/lib/seo";
 import { Mic, Users, BookOpen, Radio } from "lucide-react";
 import { SiteShell } from "@/components/SiteShell";
 import { HeroBackdrop } from "@/components/HeroBackdrop";
@@ -6,21 +8,15 @@ import { SectionHeading } from "@/components/SectionHeading";
 import { ImageCard } from "@/components/ImageCard";
 
 export const Route = createFileRoute("/a-propos")({
-  head: () => ({
-    meta: [
-      { title: "À propos — BBH Association" },
-      {
-        name: "description",
-        content:
-          "BBH Association : créer nos propres espaces pour la culture urbaine. Notre histoire, notre vision et nos valeurs.",
-      },
-      { property: "og:title", content: "À propos de BBH Association" },
-      {
-        property: "og:description",
-        content: "Créer nos propres espaces pour la culture urbaine.",
-      },
-    ],
-  }),
+  loader: ({ context }) => context.queryClient.ensureQueryData(seoQueryOptions),
+  head: ({ loaderData }) => {
+    const cfg = loaderData as SeoConfig | undefined;
+    const base = cfg?.settings.baseUrl ?? "";
+    return pageHead(cfg, "about", {
+      path: "/a-propos",
+      jsonLd: [breadcrumbJsonLd(base, [{ name: "Accueil", path: "/" }, { name: "À propos", path: "/a-propos" }])],
+    });
+  },
   component: AboutPage,
 });
 

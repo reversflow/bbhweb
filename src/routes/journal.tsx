@@ -1,44 +1,55 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { seoQueryOptions, type SeoConfig } from "@/hooks/use-seo";
+import { pageHead, breadcrumbJsonLd, absoluteUrl } from "@/lib/seo";
+import { listPublicPosts, type PublicPost } from "@/lib/content.functions";
 import { SiteShell } from "@/components/SiteShell";
 import { HeroBackdrop } from "@/components/HeroBackdrop";
 import { useSignedUrl } from "@/hooks/use-signed-url";
 
 export const Route = createFileRoute("/journal")({
-  head: () => ({
-    meta: [
-      { title: "Journal — Reverseflow · BBH" },
-      { name: "description", content: "Studio, sessions live, coulisses. Le carnet de bord de Reverseflow." },
-    ],
-  }),
+  loader: async ({ context }) => {
+    const [seo, posts] = await Promise.all([
+      context.queryClient.ensureQueryData(seoQueryOptions),
+      listPublicPosts(),
+    ]);
+    return { seo: seo as SeoConfig, posts };
+  },
+  head: ({ loaderData }) => {
+    const cfg = loaderData?.seo;
+    const base = cfg?.settings.baseUrl ?? "";
+    const posts = loaderData?.posts ?? [];
+    return pageHead(cfg, "journal", {
+      path: "/journal",
+      jsonLd: [
+        breadcrumbJsonLd(base, [
+          { name: "Accueil", path: "/" },
+          { name: "Journal", path: "/journal" },
+        ]),
+        {
+          "@context": "https://schema.org",
+          "@type": "Blog",
+          name: "Journal de REVERSEFLOW",
+          url: absoluteUrl(base, "/journal"),
+          inLanguage: "fr-FR",
+          blogPost: posts.slice(0, 20).map((p) => ({
+            "@type": "BlogPosting",
+            headline: p.title,
+            url: absoluteUrl(base, `/journal/${p.slug}`),
+            datePublished: p.published_at,
+          })),
+        },
+      ],
+    });
+  },
   component: JournalIndex,
 });
 
-type Post = {
-  id: string;
-  slug: string;
-  title: string;
-  excerpt: string | null;
-  cover_url: string | null;
-  category: string | null;
-  published_at: string;
-};
+type Post = PublicPost;
 
 function JournalIndex() {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loading, setLoading] = useState(true);
-  useEffect(() => {
-    (async () => {
-      const { data } = await supabase
-        .from("journal_posts")
-        .select("id, slug, title, excerpt, cover_url, category, published_at")
-        .eq("published", true)
-        .order("published_at", { ascending: false });
-      setPosts((data ?? []) as Post[]);
-      setLoading(false);
-    })();
-  }, []);
+  const { posts } = Route.useLoaderData() as { posts: Post[] };
+  const loading = false;
+
 
   return (
     <SiteShell>

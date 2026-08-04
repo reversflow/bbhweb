@@ -1,4 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { seoQueryOptions, type SeoConfig } from "@/hooks/use-seo";
+import { pageHead, breadcrumbJsonLd } from "@/lib/seo";
 import { ArrowRight, Calendar, MapPin, Users, Music, Heart } from "lucide-react";
 import { SiteShell } from "@/components/SiteShell";
 import { HeroBackdrop } from "@/components/HeroBackdrop";
@@ -7,21 +9,15 @@ import { SectionHeading } from "@/components/SectionHeading";
 import { CtaButton } from "@/components/CtaButton";
 
 export const Route = createFileRoute("/evenements")({
-  head: () => ({
-    meta: [
-      { title: "Événements BBH — Shows, open mics & showcases" },
-      {
-        name: "description",
-        content:
-          "Retrouve tous les événements BBH : shows, open mics, showcases et rencontres autour de la culture urbaine.",
-      },
-      { property: "og:title", content: "Événements BBH" },
-      {
-        property: "og:description",
-        content: "Shows, open mics, showcases et rencontres autour de la culture urbaine.",
-      },
-    ],
-  }),
+  loader: ({ context }) => context.queryClient.ensureQueryData(seoQueryOptions),
+  head: ({ loaderData }) => {
+    const cfg = loaderData as SeoConfig | undefined;
+    const base = cfg?.settings.baseUrl ?? "";
+    return pageHead(cfg, "events", {
+      path: "/evenements",
+      jsonLd: [breadcrumbJsonLd(base, [{ name: "Accueil", path: "/" }, { name: "Événements", path: "/evenements" }])],
+    });
+  },
   component: EventsPage,
 });
 
