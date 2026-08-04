@@ -1,60 +1,97 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
 import { SiteShell } from "@/components/SiteShell";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { useSignedUrl } from "@/hooks/use-signed-url";
+import { seoQueryOptions, type SeoConfig } from "@/hooks/use-seo";
+import { pageHead, breadcrumbJsonLd, absoluteUrl } from "@/lib/seo";
+import { getPublicPost, coverUrl, type PublicPost } from "@/lib/content.functions";
 
 export const Route = createFileRoute("/journal/$slug")({
-  head: ({ params }) => ({
-    meta: [
-      { title: `${params.slug} — Journal · BBH` },
-    ],
-  }),
+  loader: async ({ context, params }) => {
+    const [seo, data] = await Promise.all([
+      context.queryClient.ensureQueryData(seoQueryOptions),
+      getPublicPost({ data: { slug: params.slug } }),
+    ]);
+    return { seo: seo as SeoConfig, ...data };
+  },
+  head: ({ loaderData, params }) => {
+    const cfg = loaderData?.seo;
+    const post = loaderData?.post;
+    const base = cfg?.settings.baseUrl ?? "";
+    const path = `/journal/${params.slug}`;
+    const description = post
+      ? post.excerpt || post.content.replace(/\s+/g, " ").slice(0, 200)
+      : undefined;
+    const image = post ? coverUrl("journal-media", post.cover_url) : null;
+
+    const jsonLd: unknown[] = [
+      breadcrumbJsonLd(base, [
+        { name: "Accueil", path: "/" },
+        { name: "Journal", path: "/journal" },
+        { name: post?.title ?? params.slug, path },
+      ]),
+    ];
+    if (post) {
+      jsonLd.push({
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        headline: post.title,
+        url: absoluteUrl(base, path),
+        datePublished: post.published_at,
+        dateModified: post.updated_at ?? post.published_at,
+        description,
+        articleSection: post.category ?? undefined,
+        image: image ? absoluteUrl(base, image) : undefined,
+        inLanguage: "fr-FR",
+        author: { "@type": "Person", name: "REVERSEFLOW" },
+        publisher: { "@id": `${base.replace(/\/+$/, "")}/#organization` },
+      });
+    }
+
+    return pageHead(cfg, "journal", {
+      path,
+      title: post ? `${post.title} — Journal · BBH` : "Journal · BBH",
+      description,
+      ogTitle: post?.title,
+      ogDescription: description,
+      image,
+      type: "article",
+      noindex: !post,
+      jsonLd,
+    });
+  },
   component: JournalPost,
 });
 
-type Post = {
-  id: string;
-  slug: string;
-  title: string;
-  excerpt: string | null;
-  content: string;
-  cover_url: string | null;
-  category: string | null;
-  published_at: string;
-};
+type Post = PublicPost;
 
 function JournalPost() {
-  const { slug } = Route.useParams();
-  const [post, setPost] = useState<Post | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    (async () => {
-      const { data } = await supabase.from("journal_posts").select("*").eq("slug", slug).eq("published", true).maybeSingle();
-      setPost(data as Post | null);
-      setLoading(false);
-    })();
-  }, [slug]);
+  const { post } = Route.useLoaderData() as { post: Post | null };
 
   const url = useSignedUrl("journal-media", post?.cover_url ?? null);
 
-  if (loading) return <SiteShell><div className="px-6 py-16 text-muted-foreground">Chargement…</div></SiteShell>;
   if (!post) throw notFound();
 
   return (
     <SiteShell>
       <article className="mx-auto max-w-3xl px-6 py-16">
-        <Link to="/journal" className="text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground">
-          ← Journal
-        </Link>
+        <Breadcrumbs
+          items={[
+            { name: "Accueil", path: "/" },
+            { name: "Journal", path: "/journal" },
+            { name: post.title, path: `/journal/${post.slug}` },
+          ]}
+        />
         {post.category && <p className="mt-6 text-[11px] font-semibold uppercase tracking-[0.3em] text-electric-glow">{post.category}</p>}
         <h1 className="mt-2 font-display text-5xl font-black leading-[0.95] tracking-tighter sm:text-6xl">
           {post.title}
         </h1>
         <p className="mt-4 text-xs uppercase tracking-widest text-muted-foreground">
-          {new Date(post.published_at).toLocaleDateString("fr-FR", { day: "2-digit", month: "long", year: "numeric" })}
+          <time dateTime={post.published_at}>
+            {new Date(post.published_at).toLocaleDateString("fr-FR", { day: "2-digit", month: "long", year: "numeric" })}
+          </time>
         </p>
+
         {url && (
           <div className="mt-8 overflow-hidden rounded-2xl border border-white/10">
             <img src={url} alt="" className="w-full object-cover" />
