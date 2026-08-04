@@ -1,4 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { seoQueryOptions, type SeoConfig } from "@/hooks/use-seo";
+import { pageHead, breadcrumbJsonLd } from "@/lib/seo";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { SiteShell } from "@/components/SiteShell";
@@ -6,12 +8,15 @@ import { HeroBackdrop } from "@/components/HeroBackdrop";
 import { useSignedUrl } from "@/hooks/use-signed-url";
 
 export const Route = createFileRoute("/journal")({
-  head: () => ({
-    meta: [
-      { title: "Journal — Reverseflow · BBH" },
-      { name: "description", content: "Studio, sessions live, coulisses. Le carnet de bord de Reverseflow." },
-    ],
-  }),
+  loader: ({ context }) => context.queryClient.ensureQueryData(seoQueryOptions),
+  head: ({ loaderData }) => {
+    const cfg = loaderData as SeoConfig | undefined;
+    const base = cfg?.settings.baseUrl ?? "";
+    return pageHead(cfg, "journal", {
+      path: "/journal",
+      jsonLd: [breadcrumbJsonLd(base, [{ name: "Accueil", path: "/" }, { name: "Journal", path: "/journal" }])],
+    });
+  },
   component: JournalIndex,
 });
 

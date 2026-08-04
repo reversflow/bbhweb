@@ -1,4 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { seoQueryOptions, type SeoConfig } from "@/hooks/use-seo";
+import { pageHead, breadcrumbJsonLd } from "@/lib/seo";
 import { useState } from "react";
 import { Mail, Instagram, MapPin, FileText, Send } from "lucide-react";
 import { SiteShell } from "@/components/SiteShell";
@@ -6,21 +8,15 @@ import { HeroBackdrop } from "@/components/HeroBackdrop";
 import { CtaButton } from "@/components/CtaButton";
 
 export const Route = createFileRoute("/contact")({
-  head: () => ({
-    meta: [
-      { title: "Contact & partenariats — BBH Association" },
-      {
-        name: "description",
-        content:
-          "Contacte BBH pour un événement, un atelier, un partenariat ou une collaboration artistique.",
-      },
-      { property: "og:title", content: "Contact & partenariats — BBH" },
-      {
-        property: "og:description",
-        content: "Écris-nous pour construire un projet culturel ensemble.",
-      },
-    ],
-  }),
+  loader: ({ context }) => context.queryClient.ensureQueryData(seoQueryOptions),
+  head: ({ loaderData }) => {
+    const cfg = loaderData as SeoConfig | undefined;
+    const base = cfg?.settings.baseUrl ?? "";
+    return pageHead(cfg, "contact", {
+      path: "/contact",
+      jsonLd: [breadcrumbJsonLd(base, [{ name: "Accueil", path: "/" }, { name: "Contact", path: "/contact" }])],
+    });
+  },
   component: ContactPage,
 });
 

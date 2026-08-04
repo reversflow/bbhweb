@@ -1,4 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { seoQueryOptions, type SeoConfig } from "@/hooks/use-seo";
+import { pageHead, breadcrumbJsonLd } from "@/lib/seo";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { SiteShell } from "@/components/SiteShell";
@@ -9,14 +11,15 @@ import { Play, Pause, Disc3, ExternalLink } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/musique")({
-  head: () => ({
-    meta: [
-      { title: "Musique — REVERSEFLOW · BBH" },
-      { name: "description", content: "L'archive vivante de Reverseflow : morceaux, sorties, sessions studio et paroles." },
-      { property: "og:title", content: "Reverseflow — Musique · BBH" },
-      { property: "og:description", content: "Découvrir, écouter et explorer l'univers de Reverseflow." },
-    ],
-  }),
+  loader: ({ context }) => context.queryClient.ensureQueryData(seoQueryOptions),
+  head: ({ loaderData }) => {
+    const cfg = loaderData as SeoConfig | undefined;
+    const base = cfg?.settings.baseUrl ?? "";
+    return pageHead(cfg, "music", {
+      path: "/musique",
+      jsonLd: [breadcrumbJsonLd(base, [{ name: "Accueil", path: "/" }, { name: "Musique", path: "/musique" }])],
+    });
+  },
   component: MusicPage,
 });
 

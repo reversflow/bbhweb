@@ -1,4 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { seoQueryOptions, type SeoConfig } from "@/hooks/use-seo";
+import { pageHead, breadcrumbJsonLd } from "@/lib/seo";
 import { ArrowRight, PenLine, Mic2, Sparkles, Compass } from "lucide-react";
 import { SiteShell } from "@/components/SiteShell";
 import { HeroBackdrop } from "@/components/HeroBackdrop";
@@ -6,22 +8,15 @@ import { SectionHeading } from "@/components/SectionHeading";
 import { CtaButton } from "@/components/CtaButton";
 
 export const Route = createFileRoute("/ateliers")({
-  head: () => ({
-    meta: [
-      { title: "Ateliers BBH — Rap, écriture, studio & expression" },
-      {
-        name: "description",
-        content:
-          "Ateliers autour du rap, de l'écriture, de l'expression artistique et des métiers de la musique.",
-      },
-      { property: "og:title", content: "Ateliers BBH" },
-      {
-        property: "og:description",
-        content:
-          "Des ateliers accessibles et concrets pour accompagner les jeunes et les artistes émergents.",
-      },
-    ],
-  }),
+  loader: ({ context }) => context.queryClient.ensureQueryData(seoQueryOptions),
+  head: ({ loaderData }) => {
+    const cfg = loaderData as SeoConfig | undefined;
+    const base = cfg?.settings.baseUrl ?? "";
+    return pageHead(cfg, "workshops", {
+      path: "/ateliers",
+      jsonLd: [breadcrumbJsonLd(base, [{ name: "Accueil", path: "/" }, { name: "Ateliers", path: "/ateliers" }])],
+    });
+  },
   component: WorkshopsPage,
 });
 

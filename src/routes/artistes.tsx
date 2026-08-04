@@ -1,4 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { seoQueryOptions, type SeoConfig } from "@/hooks/use-seo";
+import { pageHead, breadcrumbJsonLd } from "@/lib/seo";
 import { Instagram, Music2, Youtube, MapPin, ArrowRight } from "lucide-react";
 import { SiteShell } from "@/components/SiteShell";
 import { HeroBackdrop } from "@/components/HeroBackdrop";
@@ -8,21 +10,15 @@ import { ImageCard } from "@/components/ImageCard";
 
 
 export const Route = createFileRoute("/artistes")({
-  head: () => ({
-    meta: [
-      { title: "Artistes BBH — Le roster" },
-      {
-        name: "description",
-        content:
-          "Un roster à taille humaine. BBH démarre avec REVERSEFLOW, artiste fondateur.",
-      },
-      { property: "og:title", content: "Artistes BBH" },
-      {
-        property: "og:description",
-        content: "Découvre les artistes qui collaborent avec BBH Association.",
-      },
-    ],
-  }),
+  loader: ({ context }) => context.queryClient.ensureQueryData(seoQueryOptions),
+  head: ({ loaderData }) => {
+    const cfg = loaderData as SeoConfig | undefined;
+    const base = cfg?.settings.baseUrl ?? "";
+    return pageHead(cfg, "artists", {
+      path: "/artistes",
+      jsonLd: [breadcrumbJsonLd(base, [{ name: "Accueil", path: "/" }, { name: "Artistes", path: "/artistes" }])],
+    });
+  },
   component: ArtistsPage,
 });
 
