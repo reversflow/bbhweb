@@ -1,77 +1,88 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
 import { SiteShell } from "@/components/SiteShell";
 import { CommentSection } from "@/components/CommentSection";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { usePlayer, formatTime } from "@/contexts/player-context";
 import { useSignedUrl } from "@/hooks/use-signed-url";
+import { seoQueryOptions, type SeoConfig } from "@/hooks/use-seo";
+import { pageHead, breadcrumbJsonLd, absoluteUrl } from "@/lib/seo";
+import { getPublicSong, coverUrl, type PublicSong } from "@/lib/content.functions";
 import { Play, Pause, ExternalLink, Share2 } from "lucide-react";
 
 export const Route = createFileRoute("/musique/$slug")({
-  head: ({ params }) => ({
-    meta: [
-      { title: `${params.slug} — Reverseflow · BBH` },
-      { name: "description", content: "Écouter et découvrir ce morceau de Reverseflow." },
-    ],
-  }),
+  loader: async ({ context, params }) => {
+    const [seo, data] = await Promise.all([
+      context.queryClient.ensureQueryData(seoQueryOptions),
+      getPublicSong({ data: { slug: params.slug } }),
+    ]);
+    return { seo: seo as SeoConfig, ...data };
+  },
+  head: ({ loaderData, params }) => {
+    const cfg = loaderData?.seo;
+    const song = loaderData?.song;
+    const base = cfg?.settings.baseUrl ?? "";
+    const artist = "REVERSEFLOW";
+    const title = song
+      ? song.seo_title || `${song.title} — ${artist} · BBH`
+      : `Morceau — ${artist} · BBH`;
+    const description = song
+      ? song.seo_description ||
+        (song.description
+          ? song.description.slice(0, 200)
+          : `Écoute « ${song.title} » de ${artist}${song.genres?.length ? ` (${song.genres.join(", ")})` : ""} : lecteur intégré, paroles et crédits.`)
+      : undefined;
+    const image = song ? coverUrl("song-artwork", song.cover_url) : null;
+    const path = `/musique/${params.slug}`;
+
+    const jsonLd: unknown[] = [
+      breadcrumbJsonLd(base, [
+        { name: "Accueil", path: "/" },
+        { name: "Musique", path: "/musique" },
+        { name: song?.title ?? params.slug, path },
+      ]),
+    ];
+    if (song) {
+      jsonLd.push({
+        "@context": "https://schema.org",
+        "@type": "MusicRecording",
+        name: song.title,
+        url: absoluteUrl(base, path),
+        byArtist: { "@type": "MusicGroup", name: artist },
+        genre: song.genres?.length ? song.genres : undefined,
+        datePublished: song.release_date ?? undefined,
+        duration: song.duration_seconds
+          ? `PT${Math.floor(song.duration_seconds / 60)}M${song.duration_seconds % 60}S`
+          : undefined,
+        image: image ? absoluteUrl(base, image) : undefined,
+        description: song.description ?? undefined,
+      });
+    }
+
+    return pageHead(cfg, "music", {
+      path,
+      title,
+      description,
+      ogTitle: song?.title ? `${song.title} — ${artist}` : undefined,
+      ogDescription: description,
+      image,
+      type: "music.song",
+      noindex: !song,
+      jsonLd,
+    });
+  },
   component: SongPage,
 });
 
-type Song = {
-  id: string;
-  slug: string;
-  title: string;
-  description: string | null;
-  genres: string[];
-  duration_seconds: number | null;
-  release_date: string | null;
-  cover_url: string | null;
-  audio_url: string | null;
-  lyrics: string | null;
-  credits: string | null;
-  featured: boolean;
-  comments_enabled: boolean;
-  streaming_links: Record<string, string> | null;
-  seo_title: string | null;
-  seo_description: string | null;
-};
+type Song = PublicSong;
 
 function SongPage() {
-  const { slug } = Route.useParams();
-  const [song, setSong] = useState<Song | null>(null);
-  const [related, setRelated] = useState<Song[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { song, related } = Route.useLoaderData();
   const player = usePlayer();
-
-  useEffect(() => {
-    (async () => {
-      setLoading(true);
-      const { data } = await supabase.from("songs").select("*").eq("slug", slug).eq("published", true).maybeSingle();
-      setSong(data as Song | null);
-      if (data) {
-        const { data: rel } = await supabase
-          .from("songs")
-          .select("*")
-          .eq("published", true)
-          .neq("id", data.id)
-          .order("release_date", { ascending: false })
-          .limit(6);
-        setRelated((rel ?? []) as Song[]);
-      }
-      setLoading(false);
-    })();
-  }, [slug]);
 
   const cover = useSignedUrl("song-artwork", song?.cover_url ?? null);
 
-  if (loading) {
-    return (
-      <SiteShell>
-        <div className="mx-auto max-w-4xl px-6 py-24 text-muted-foreground">Chargement…</div>
-      </SiteShell>
-    );
-  }
   if (!song) throw notFound();
+
 
   const isCurrent = player.track?.id === song.id;
   const track = { id: song.id, slug: song.slug, title: song.title, artist: "REVERSEFLOW", cover_url: song.cover_url, audio_url: song.audio_url, duration_seconds: song.duration_seconds };
