@@ -76,7 +76,7 @@ export const Route = createFileRoute("/musique/$slug")({
 type Song = PublicSong;
 
 function SongPage() {
-  const { song, related } = Route.useLoaderData();
+  const { song, related } = Route.useLoaderData() as { song: Song | null; related: Song[] };
   const player = usePlayer();
 
   const cover = useSignedUrl("song-artwork", song?.cover_url ?? null);
