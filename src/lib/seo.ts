@@ -1,4 +1,4 @@
-import type { SeoConfig, SeoPage, SiteSettings } from "./seo.functions";
+import { DEFAULT_SETTINGS, type SeoConfig, type SeoPage, type SiteSettings } from "./seo.functions";
 
 export type HeadTag = Record<string, unknown>;
 
@@ -153,4 +153,14 @@ export function websiteJsonLd(settings: SiteSettings) {
     description: settings.defaultDescription,
     publisher: { "@id": `${base}/#organization` },
   };
+}
+
+/** Convenience wrapper for route head(): tolerates missing loader data. */
+export function pageHead(
+  loaderData: SeoConfig | undefined,
+  pageKey: string,
+  opts: BuildOptions,
+) {
+  const settings = loaderData?.settings ?? DEFAULT_SETTINGS;
+  return buildHead(settings, findPage(loaderData, pageKey), opts);
 }

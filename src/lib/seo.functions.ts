@@ -37,7 +37,7 @@ export type SeoPage = {
 
 export type SeoConfig = { settings: SiteSettings; pages: SeoPage[] };
 
-const DEFAULT_SETTINGS: SiteSettings = {
+export const DEFAULT_SETTINGS: SiteSettings = {
   siteName: "BBH Association",
   baseUrl: "https://bbhweb.lovable.app",
   tagline: "Élever la culture urbaine",
