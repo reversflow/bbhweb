@@ -107,7 +107,15 @@ function SongPage() {
           </div>
 
           <div className="flex flex-col justify-end">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-electric-glow">Reverseflow</p>
+            <Breadcrumbs
+              items={[
+                { name: "Accueil", path: "/" },
+                { name: "Musique", path: "/musique" },
+                { name: song.title, path: `/musique/${song.slug}` },
+              ]}
+            />
+            <p className="mt-4 text-[11px] font-semibold uppercase tracking-[0.3em] text-electric-glow">Reverseflow</p>
+
             <h1 className="mt-3 font-display text-5xl font-black leading-[0.95] tracking-tighter sm:text-7xl">
               {song.title}
             </h1>
