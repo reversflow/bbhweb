@@ -157,7 +157,12 @@ export const duplicateEvent = createServerFn({ method: "POST" })
     }
     copy.slug = base;
 
-    const { data: created, error: insErr } = await supabaseAdmin.from("events").insert(copy).select("id").single();
+    const { data: created, error: insErr } = await supabaseAdmin
+      .from("events")
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      .insert(copy as any)
+      .select("id")
+      .single();
     if (insErr) throw new Error(insErr.message);
     return { ok: true, id: created.id as string };
   });
