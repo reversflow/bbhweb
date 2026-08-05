@@ -161,6 +161,182 @@ export type Database = {
           },
         ]
       }
+      event_redirects: {
+        Row: {
+          created_at: string
+          event_id: string
+          id: string
+          old_slug: string
+        }
+        Insert: {
+          created_at?: string
+          event_id: string
+          id?: string
+          old_slug: string
+        }
+        Update: {
+          created_at?: string
+          event_id?: string
+          id?: string
+          old_slug?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_redirects_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      events: {
+        Row: {
+          address: string
+          ai_summary: string
+          artists: string[]
+          capacity: number | null
+          city: string
+          contact_email: string
+          contact_phone: string
+          country: string
+          created_at: string
+          cta_label: string
+          cta_url: string
+          currency: string
+          end_date: string | null
+          end_time: string
+          event_type: string
+          featured: boolean
+          full_description: string
+          gallery: Json
+          id: string
+          image_alt: string
+          is_free: boolean
+          latitude: number | null
+          longitude: number | null
+          main_image: string
+          noindex: boolean
+          og_image: string
+          organizer: string
+          partners: string[]
+          postal_code: string
+          poster_image: string
+          published: boolean
+          registration_url: string
+          seo_description: string
+          seo_title: string
+          short_description: string
+          slug: string
+          social_links: Json
+          sort_order: number
+          start_date: string | null
+          start_time: string
+          status: string
+          ticket_price: number | null
+          ticket_url: string
+          title: string
+          updated_at: string
+          venue_name: string
+        }
+        Insert: {
+          address?: string
+          ai_summary?: string
+          artists?: string[]
+          capacity?: number | null
+          city?: string
+          contact_email?: string
+          contact_phone?: string
+          country?: string
+          created_at?: string
+          cta_label?: string
+          cta_url?: string
+          currency?: string
+          end_date?: string | null
+          end_time?: string
+          event_type?: string
+          featured?: boolean
+          full_description?: string
+          gallery?: Json
+          id?: string
+          image_alt?: string
+          is_free?: boolean
+          latitude?: number | null
+          longitude?: number | null
+          main_image?: string
+          noindex?: boolean
+          og_image?: string
+          organizer?: string
+          partners?: string[]
+          postal_code?: string
+          poster_image?: string
+          published?: boolean
+          registration_url?: string
+          seo_description?: string
+          seo_title?: string
+          short_description?: string
+          slug: string
+          social_links?: Json
+          sort_order?: number
+          start_date?: string | null
+          start_time?: string
+          status?: string
+          ticket_price?: number | null
+          ticket_url?: string
+          title: string
+          updated_at?: string
+          venue_name?: string
+        }
+        Update: {
+          address?: string
+          ai_summary?: string
+          artists?: string[]
+          capacity?: number | null
+          city?: string
+          contact_email?: string
+          contact_phone?: string
+          country?: string
+          created_at?: string
+          cta_label?: string
+          cta_url?: string
+          currency?: string
+          end_date?: string | null
+          end_time?: string
+          event_type?: string
+          featured?: boolean
+          full_description?: string
+          gallery?: Json
+          id?: string
+          image_alt?: string
+          is_free?: boolean
+          latitude?: number | null
+          longitude?: number | null
+          main_image?: string
+          noindex?: boolean
+          og_image?: string
+          organizer?: string
+          partners?: string[]
+          postal_code?: string
+          poster_image?: string
+          published?: boolean
+          registration_url?: string
+          seo_description?: string
+          seo_title?: string
+          short_description?: string
+          slug?: string
+          social_links?: Json
+          sort_order?: number
+          start_date?: string | null
+          start_time?: string
+          status?: string
+          ticket_price?: number | null
+          ticket_url?: string
+          title?: string
+          updated_at?: string
+          venue_name?: string
+        }
+        Relationships: []
+      }
       journal_posts: {
         Row: {
           artist_id: string | null
@@ -217,6 +393,45 @@ export type Database = {
           },
         ]
       }
+      nav_links: {
+        Row: {
+          created_at: string
+          enabled: boolean
+          external: boolean
+          id: string
+          label: string
+          location: string
+          new_tab: boolean
+          sort_order: number
+          updated_at: string
+          url: string
+        }
+        Insert: {
+          created_at?: string
+          enabled?: boolean
+          external?: boolean
+          id?: string
+          label: string
+          location?: string
+          new_tab?: boolean
+          sort_order?: number
+          updated_at?: string
+          url: string
+        }
+        Update: {
+          created_at?: string
+          enabled?: boolean
+          external?: boolean
+          id?: string
+          label?: string
+          location?: string
+          new_tab?: boolean
+          sort_order?: number
+          updated_at?: string
+          url?: string
+        }
+        Relationships: []
+      }
       seo_pages: {
         Row: {
           ai_summary: string
@@ -268,6 +483,48 @@ export type Database = {
           sort_order?: number
           title?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      site_content: {
+        Row: {
+          content_key: string
+          content_type: string
+          created_at: string
+          id: string
+          link_value: string
+          page_key: string
+          section_key: string
+          sort_order: number
+          text_value: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          content_key: string
+          content_type?: string
+          created_at?: string
+          id?: string
+          link_value?: string
+          page_key: string
+          section_key?: string
+          sort_order?: number
+          text_value?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          content_key?: string
+          content_type?: string
+          created_at?: string
+          id?: string
+          link_value?: string
+          page_key?: string
+          section_key?: string
+          sort_order?: number
+          text_value?: string
+          updated_at?: string
+          updated_by?: string | null
         }
         Relationships: []
       }
