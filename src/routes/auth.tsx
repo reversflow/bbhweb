@@ -32,7 +32,7 @@ function AuthPage() {
   const [loading, setLoading] = useState(false);
   const [mode, setMode] = useState<"signin" | "signup">("signin");
 
-  const target = safeNext(next);
+  const target = safeNext(next ?? "");
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
