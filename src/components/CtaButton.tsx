@@ -4,12 +4,15 @@ import { cn } from "@/lib/utils";
 interface CtaButtonProps {
   to?: string;
   href?: string;
+  /** Opens `href` in a new tab with safe rel attributes. */
+  external?: boolean;
   children: React.ReactNode;
   variant?: "primary" | "secondary" | "ghost";
   className?: string;
   type?: "button" | "submit";
   onClick?: () => void;
 }
+
 
 const styles: Record<NonNullable<CtaButtonProps["variant"]>, string> = {
   primary:
