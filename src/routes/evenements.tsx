@@ -1,50 +1,53 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { seoQueryOptions, type SeoConfig } from "@/hooks/use-seo";
-import { pageHead, breadcrumbJsonLd } from "@/lib/seo";
+import { pageHead, breadcrumbJsonLd, absoluteUrl } from "@/lib/seo";
 import { ArrowRight, Calendar, MapPin, Users, Music, Heart } from "lucide-react";
 import { SiteShell } from "@/components/SiteShell";
 import { HeroBackdrop } from "@/components/HeroBackdrop";
 import { ImageCard } from "@/components/ImageCard";
 import { SectionHeading } from "@/components/SectionHeading";
 import { CtaButton } from "@/components/CtaButton";
+import { listPublicEvents } from "@/lib/events.functions";
+import { getSiteContent } from "@/lib/site-content.functions";
+import { formatEventDate, formatEventLocation, type EventRecord } from "@/lib/events.shared";
+import { contentText, contentLink, type SiteContentBundle } from "@/lib/site-content.shared";
 
 export const Route = createFileRoute("/evenements")({
-  loader: ({ context }) => context.queryClient.ensureQueryData(seoQueryOptions),
+  loader: async ({ context }) => {
+    const [seo, events, bundle] = await Promise.all([
+      context.queryClient.ensureQueryData(seoQueryOptions),
+      listPublicEvents(),
+      getSiteContent(),
+    ]);
+    return { seo: seo as SeoConfig, events, bundle };
+  },
   head: ({ loaderData }) => {
-    const cfg = loaderData as SeoConfig | undefined;
+    const cfg = loaderData?.seo;
     const base = cfg?.settings.baseUrl ?? "";
+    const upcoming = (loaderData?.events ?? []).filter((e) => e.status === "upcoming");
     return pageHead(cfg, "events", {
       path: "/evenements",
-      jsonLd: [breadcrumbJsonLd(base, [{ name: "Accueil", path: "/" }, { name: "Événements", path: "/evenements" }])],
+      jsonLd: [
+        breadcrumbJsonLd(base, [
+          { name: "Accueil", path: "/" },
+          { name: "Événements", path: "/evenements" },
+        ]),
+        {
+          "@context": "https://schema.org",
+          "@type": "ItemList",
+          name: "Prochains événements BBH Association",
+          itemListElement: upcoming.map((e, i) => ({
+            "@type": "ListItem",
+            position: i + 1,
+            url: absoluteUrl(base, `/evenements/${e.slug}`),
+            name: e.title,
+          })),
+        },
+      ],
     });
   },
   component: EventsPage,
 });
-
-const upcoming = [
-  {
-    title: "BBH LIVE Vol.2 — Lille Wazemmes",
-    date: "11 juin 2026",
-    location: "W Bar Terrasse, Lille",
-    description:
-      "Showcases internationaux, ambiance urbaine et artistes indépendants réunis autour de la scène BBH.",
-    tone: "blue" as const,
-  },
-  {
-    title: "Reverseflow Showcase",
-    date: "22 mai 2026",
-    location: "Maubeuge",
-    description:
-      "Performance live autour de l'univers Reverseflow et de la scène BBH.",
-    tone: "red" as const,
-  },
-];
-
-const past = [
-  { title: "BBH LIVE Vol.1 — Maubeuge", tone: "purple" as const },
-  { title: "Open Mic BBH", tone: "blue" as const },
-  { title: "Rencontre artistes indépendants", tone: "red" as const },
-];
 
 const reasons = [
   {
@@ -65,24 +68,34 @@ const reasons = [
 ];
 
 function EventsPage() {
+  const { events, bundle } = Route.useLoaderData() as {
+    events: EventRecord[];
+    bundle: SiteContentBundle;
+  };
+  const upcoming = events.filter((e) => e.status !== "past");
+  const past = events.filter((e) => e.status === "past");
+  const artistsCta = contentLink(bundle, "events.cta.artists", "Voir les artistes", "/artistes");
+  const partnerCta = contentLink(bundle, "events.cta.partner", "Devenir partenaire", "/contact");
+
   return (
     <SiteShell>
       {/* Header */}
       <section className="relative overflow-hidden border-b border-white/5">
-        <div
-          className="absolute inset-0 -z-10"
-          style={{ background: "var(--gradient-hero)" }}
-        />
+        <div className="absolute inset-0 -z-10" style={{ background: "var(--gradient-hero)" }} />
         <HeroBackdrop slot="events_hero" />
         <div className="mx-auto max-w-7xl px-6 pt-24 pb-20 md:pt-32">
           <div className="text-xs font-semibold uppercase tracking-[0.25em] text-electric-glow">
-            Programmation
+            {contentText(bundle, "events.hero.eyebrow", "Programmation")}
           </div>
           <h1 className="mt-4 font-display text-5xl font-black leading-[0.95] tracking-tighter sm:text-7xl">
-            Événements BBH
+            {contentText(bundle, "events.hero.title", "Événements BBH")}
           </h1>
           <p className="mt-6 max-w-2xl text-lg text-muted-foreground sm:text-xl">
-            Shows, open mics, showcases et rencontres autour de la culture urbaine.
+            {contentText(
+              bundle,
+              "events.hero.intro",
+              "Shows, open mics, showcases et rencontres autour de la culture urbaine.",
+            )}
           </p>
         </div>
       </section>
@@ -100,16 +113,20 @@ function EventsPage() {
           />
           <div>
             <SectionHeading
-              eyebrow="À la une"
-              title="BBH LIVE"
-              description="Un format pensé pour faire découvrir des artistes indépendants dans une ambiance intime, énergique et authentique."
+              eyebrow={contentText(bundle, "events.featured.eyebrow", "À la une")}
+              title={contentText(bundle, "events.featured.title", "BBH LIVE")}
+              description={contentText(
+                bundle,
+                "events.featured.text",
+                "Un format pensé pour faire découvrir des artistes indépendants dans une ambiance intime, énergique et authentique.",
+              )}
             />
             <div className="mt-8 flex flex-wrap gap-3">
-              <CtaButton to="/artistes" variant="secondary">
-                Voir les artistes
+              <CtaButton to={artistsCta.url} variant="secondary">
+                {artistsCta.label}
               </CtaButton>
-              <CtaButton to="/contact" variant="ghost">
-                Devenir partenaire <ArrowRight className="size-4" />
+              <CtaButton to={partnerCta.url} variant="ghost">
+                {partnerCta.label} <ArrowRight className="size-4" />
               </CtaButton>
             </div>
           </div>
@@ -118,83 +135,112 @@ function EventsPage() {
 
       {/* Upcoming */}
       <section className="mx-auto max-w-7xl px-6 pb-24">
-        <SectionHeading eyebrow="À venir" title="Prochains événements" />
-        <div className="mt-12 grid gap-6 md:grid-cols-2">
-          {upcoming.map((e, i) => (
-            <article
-              key={e.title}
-              className="group overflow-hidden rounded-3xl border border-white/10 bg-surface card-hover"
-            >
-              <ImageCard
-                tone={e.tone}
-                aspect="aspect-[16/10]"
-                label="À venir"
-                title=""
-                overlay={false}
-                className="rounded-none border-none"
-                slot={`events_upcoming_${i + 1}`}
-                alt={`${e.title} — ${e.location}`}
-              />
-              <div className="p-7">
-                <div className="flex flex-wrap items-center gap-4 text-xs uppercase tracking-[0.18em] text-muted-foreground">
-                  <span className="inline-flex items-center gap-1.5">
-                    <Calendar className="size-3.5 text-electric-glow" /> {e.date}
-                  </span>
-                  <span className="inline-flex items-center gap-1.5">
-                    <MapPin className="size-3.5 text-electric-glow" /> {e.location}
-                  </span>
-                </div>
-                <h3 className="mt-4 font-display text-2xl font-black tracking-tight">
-                  {e.title}
-                </h3>
-                <p className="mt-3 text-sm text-muted-foreground">{e.description}</p>
-                <div className="mt-6">
-                  <CtaButton variant="secondary" href="#">
-                    Voir l'événement <ArrowRight className="size-4" />
-                  </CtaButton>
-                </div>
-              </div>
-            </article>
-          ))}
-        </div>
+        <SectionHeading
+          eyebrow={contentText(bundle, "events.upcoming.eyebrow", "À venir")}
+          title={contentText(bundle, "events.upcoming.title", "Prochains événements")}
+        />
+        {upcoming.length === 0 ? (
+          <p className="mt-10 text-muted-foreground">
+            Aucun événement programmé pour le moment. Reviens bientôt ou suis-nous sur les réseaux.
+          </p>
+        ) : (
+          <div className="mt-12 grid gap-6 md:grid-cols-2">
+            {upcoming.map((e) => {
+              const date = formatEventDate(e.start_date);
+              const place = formatEventLocation(e);
+              return (
+                <article
+                  key={e.id}
+                  className="group overflow-hidden rounded-3xl border border-white/10 bg-surface card-hover"
+                >
+                  <Link to="/evenements/$slug" params={{ slug: e.slug }} tabIndex={-1} aria-hidden="true">
+                    <ImageCard
+                      tone="blue"
+                      aspect="aspect-[16/10]"
+                      label={e.status === "cancelled" ? "Annulé" : "À venir"}
+                      title=""
+                      overlay={false}
+                      className="rounded-none border-none"
+                      slot={e.main_image || undefined}
+                      alt={e.image_alt || `${e.title}${place ? ` — ${place}` : ""}`}
+                    />
+                  </Link>
+                  <div className="p-7">
+                    <div className="flex flex-wrap items-center gap-4 text-xs uppercase tracking-[0.18em] text-muted-foreground">
+                      {date && (
+                        <span className="inline-flex items-center gap-1.5">
+                          <Calendar className="size-3.5 text-electric-glow" aria-hidden="true" /> {date}
+                        </span>
+                      )}
+                      {place && (
+                        <span className="inline-flex items-center gap-1.5">
+                          <MapPin className="size-3.5 text-electric-glow" aria-hidden="true" /> {place}
+                        </span>
+                      )}
+                    </div>
+                    <h3 className="mt-4 font-display text-2xl font-black tracking-tight">
+                      <Link to="/evenements/$slug" params={{ slug: e.slug }} className="transition hover:text-electric-glow">
+                        {e.title}
+                      </Link>
+                    </h3>
+                    {e.short_description && (
+                      <p className="mt-3 text-sm text-muted-foreground">{e.short_description}</p>
+                    )}
+                    <div className="mt-6">
+                      <CtaButton variant="secondary" to={`/evenements/${e.slug}`}>
+                        Voir l'événement <ArrowRight className="size-4" />
+                      </CtaButton>
+                    </div>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        )}
       </section>
 
       {/* Past */}
-      <section className="mx-auto max-w-7xl px-6 pb-24">
-        <SectionHeading eyebrow="Archives" title="Événements passés" />
-        <div className="mt-12 grid gap-5 md:grid-cols-3">
-          {past.map((p, i) => (
-            <ImageCard
-              key={p.title}
-              label="Passé"
-              title={p.title}
-              tone={p.tone}
-              aspect="aspect-[4/5]"
-              slot={`events_past_${i + 1}`}
-              alt={`${p.title} — événement passé de BBH Association`}
-            />
-          ))}
-        </div>
-      </section>
+      {past.length > 0 && (
+        <section className="mx-auto max-w-7xl px-6 pb-24">
+          <SectionHeading
+            eyebrow={contentText(bundle, "events.past.eyebrow", "Archives")}
+            title={contentText(bundle, "events.past.title", "Événements passés")}
+          />
+          <div className="mt-12 grid gap-5 md:grid-cols-3">
+            {past.map((p) => (
+              <Link
+                key={p.id}
+                to="/evenements/$slug"
+                params={{ slug: p.slug }}
+                className="block rounded-3xl transition hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-electric"
+              >
+                <ImageCard
+                  label="Passé"
+                  title={p.title}
+                  tone="purple"
+                  aspect="aspect-[4/5]"
+                  slot={p.main_image || undefined}
+                  alt={p.image_alt || `${p.title} — événement passé de BBH Association`}
+                />
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Why come */}
       <section className="mx-auto max-w-7xl px-6 pb-32">
         <SectionHeading
-          eyebrow="L'expérience"
-          title="Pourquoi venir à un événement BBH&nbsp;?"
+          eyebrow={contentText(bundle, "events.why.eyebrow", "L'expérience")}
+          title={contentText(bundle, "events.why.title", "Pourquoi venir à un événement BBH ?")}
         />
         <div className="mt-12 grid gap-5 md:grid-cols-3">
           {reasons.map((r) => (
-            <div
-              key={r.title}
-              className="rounded-2xl border border-white/10 bg-surface/60 p-7 card-hover"
-            >
+            <div key={r.title} className="rounded-2xl border border-white/10 bg-surface/60 p-7 card-hover">
               <div className="grid size-12 place-items-center rounded-xl border border-electric/30 bg-electric/10 text-electric-glow">
-                <r.icon className="size-5" />
+                <r.icon className="size-5" aria-hidden="true" />
               </div>
-              <h3 className="mt-5 font-display text-xl font-bold tracking-tight">
-                {r.title}
-              </h3>
+              <h3 className="mt-5 font-display text-xl font-bold tracking-tight">{r.title}</h3>
               <p className="mt-2 text-sm text-muted-foreground">{r.text}</p>
             </div>
           ))}
