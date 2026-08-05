@@ -25,6 +25,7 @@ const styles: Record<NonNullable<CtaButtonProps["variant"]>, string> = {
 export function CtaButton({
   to,
   href,
+  external,
   children,
   variant = "primary",
   className,
@@ -45,11 +46,17 @@ export function CtaButton({
   }
   if (href) {
     return (
-      <a href={href} className={cls} onClick={onClick}>
+      <a
+        href={href}
+        className={cls}
+        onClick={onClick}
+        {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+      >
         {children}
       </a>
     );
   }
+
   return (
     <button type={type} className={cls} onClick={onClick}>
       {children}
