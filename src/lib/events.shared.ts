@@ -104,3 +104,22 @@ export function eventPriceLabel(e: EventRecord): string {
     currency: e.currency || "EUR",
   }).format(Number(e.ticket_price));
 }
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
+function strArray(v: any): string[] {
+  return Array.isArray(v) ? v.filter((x: unknown): x is string => typeof x === "string") : [];
+}
+
+export function mapEvent(row: any): EventRecord {
+  return {
+    ...row,
+    gallery: strArray(row.gallery),
+    social_links: strArray(row.social_links),
+    artists: strArray(row.artists),
+    partners: strArray(row.partners),
+    latitude: row.latitude == null ? null : Number(row.latitude),
+    longitude: row.longitude == null ? null : Number(row.longitude),
+    ticket_price: row.ticket_price == null ? null : Number(row.ticket_price),
+  } as EventRecord;
+}
+/* eslint-enable @typescript-eslint/no-explicit-any */
