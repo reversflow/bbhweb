@@ -8,8 +8,11 @@ import { JournalManager } from "@/components/admin/JournalManager";
 import { CommentsManager } from "@/components/admin/CommentsManager";
 import { MediaManager } from "@/components/admin/MediaManager";
 import { SeoManager } from "@/components/admin/SeoManager";
+import { EventsManager } from "@/components/admin/EventsManager";
+import { ContentManager } from "@/components/admin/ContentManager";
+import { NavManager } from "@/components/admin/NavManager";
 import { getAdminStats } from "@/lib/music.functions";
-import { LogOut, Music, BookOpen, MessageCircle, LayoutDashboard, ShieldAlert, ArrowLeft, ImageIcon, Search } from "lucide-react";
+import { LogOut, Music, BookOpen, MessageCircle, LayoutDashboard, ShieldAlert, ArrowLeft, ImageIcon, Search, CalendarDays, Type, Link2 } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({
@@ -21,7 +24,7 @@ export const Route = createFileRoute("/_authenticated/admin")({
   component: AdminPage,
 });
 
-type Tab = "dashboard" | "music" | "journal" | "comments" | "images" | "seo";
+type Tab = "dashboard" | "events" | "music" | "journal" | "comments" | "images" | "content" | "nav" | "seo";
 
 function AdminPage() {
   const navigate = useNavigate();
@@ -110,6 +113,9 @@ function AdminPage() {
           <TabBtn active={tab === "dashboard"} onClick={() => setTab("dashboard")} icon={<LayoutDashboard className="size-4" />}>
             Dashboard
           </TabBtn>
+          <TabBtn active={tab === "events"} onClick={() => setTab("events")} icon={<CalendarDays className="size-4" />}>
+            Événements
+          </TabBtn>
           <TabBtn active={tab === "music"} onClick={() => setTab("music")} icon={<Music className="size-4" />}>
             Musique
           </TabBtn>
@@ -122,6 +128,12 @@ function AdminPage() {
           <TabBtn active={tab === "images"} onClick={() => setTab("images")} icon={<ImageIcon className="size-4" />}>
             Site Images
           </TabBtn>
+          <TabBtn active={tab === "content"} onClick={() => setTab("content")} icon={<Type className="size-4" />}>
+            Textes
+          </TabBtn>
+          <TabBtn active={tab === "nav"} onClick={() => setTab("nav")} icon={<Link2 className="size-4" />}>
+            Navigation
+          </TabBtn>
           <TabBtn active={tab === "seo"} onClick={() => setTab("seo")} icon={<Search className="size-4" />}>
             SEO
           </TabBtn>
@@ -129,10 +141,13 @@ function AdminPage() {
 
         <div className="mt-8">
           {tab === "dashboard" && <Dashboard onOpen={setTab} />}
+          {tab === "events" && <EventsManager />}
           {tab === "music" && <MusicManager />}
           {tab === "journal" && <JournalManager />}
           {tab === "comments" && <CommentsManager />}
           {tab === "images" && <MediaManager />}
+          {tab === "content" && <ContentManager />}
+          {tab === "nav" && <NavManager />}
           {tab === "seo" && <SeoManager />}
         </div>
       </div>
