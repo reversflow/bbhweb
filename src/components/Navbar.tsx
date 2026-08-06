@@ -4,22 +4,31 @@ import { useEffect, useState } from "react";
 import { Menu, X, ShieldCheck, LogIn } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useIsAdmin } from "@/hooks/use-admin";
+import { useNavLinks } from "@/hooks/use-content";
+import { useHydrated } from "@/hooks/use-hydrated";
+import { NavItem } from "@/components/NavItem";
+import type { NavLink } from "@/lib/site-content.shared";
 
-const links = [
-  { to: "/", label: "Accueil" },
-  { to: "/musique", label: "Musique" },
-  { to: "/evenements", label: "Événements" },
-  { to: "/ateliers", label: "Ateliers" },
-  { to: "/artistes", label: "Artistes" },
-  { to: "/journal", label: "Journal" },
-  { to: "/a-propos", label: "À propos" },
-  { to: "/contact", label: "Contact" },
-] as const;
+type SimpleLink = Pick<NavLink, "label" | "url" | "external" | "new_tab">;
+
+const defaultLinks: SimpleLink[] = [
+  { url: "/", label: "Accueil", external: false, new_tab: false },
+  { url: "/musique", label: "Musique", external: false, new_tab: false },
+  { url: "/evenements", label: "Événements", external: false, new_tab: false },
+  { url: "/ateliers", label: "Ateliers", external: false, new_tab: false },
+  { url: "/artistes", label: "Artistes", external: false, new_tab: false },
+  { url: "/journal", label: "Journal", external: false, new_tab: false },
+  { url: "/a-propos", label: "À propos", external: false, new_tab: false },
+  { url: "/contact", label: "Contact", external: false, new_tab: false },
+];
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
   const [authed, setAuthed] = useState(false);
   const { isAdmin } = useIsAdmin();
+  const hydrated = useHydrated();
+  const cmsLinks = useNavLinks("header");
+  const links: SimpleLink[] = hydrated && cmsLinks.length > 0 ? cmsLinks : defaultLinks;
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setAuthed(!!data.user));
@@ -41,16 +50,13 @@ export function Navbar() {
 
         <nav className="hidden items-center gap-1 md:flex">
           {links.map((l) => (
-            <Link
-              key={l.to}
-              to={l.to}
-              activeOptions={{ exact: l.to === "/" }}
-              activeProps={{ className: "text-foreground" }}
-              inactiveProps={{ className: "text-muted-foreground" }}
+            <NavItem
+              key={`${l.url}-${l.label}`}
+              link={l}
+              activeClassName="text-foreground"
+              inactiveClassName="text-muted-foreground"
               className="rounded-full px-3.5 py-2 text-sm font-medium transition-colors hover:text-foreground"
-            >
-              {l.label}
-            </Link>
+            />
           ))}
         </nav>
 
@@ -91,17 +97,14 @@ export function Navbar() {
         <div className="border-t border-white/5 bg-background/95 backdrop-blur-xl md:hidden">
           <nav className="mx-auto flex max-w-7xl flex-col gap-1 px-6 py-4">
             {links.map((l) => (
-              <Link
-                key={l.to}
-                to={l.to}
-                activeOptions={{ exact: l.to === "/" }}
+              <NavItem
+                key={`${l.url}-${l.label}`}
+                link={l}
                 onClick={() => setOpen(false)}
-                activeProps={{ className: "bg-white/5 text-foreground" }}
-                inactiveProps={{ className: "text-muted-foreground" }}
+                activeClassName="bg-white/5 text-foreground"
+                inactiveClassName="text-muted-foreground"
                 className="rounded-lg px-4 py-3 text-base font-medium"
-              >
-                {l.label}
-              </Link>
+              />
             ))}
             <div className="mt-2 border-t border-white/5 pt-3">
               {authed && isAdmin ? (

@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { seoQueryOptions, type SeoConfig } from "@/hooks/use-seo";
 import { pageHead, breadcrumbJsonLd } from "@/lib/seo";
 import { Instagram, Music2, Youtube, MapPin, ArrowRight } from "lucide-react";
@@ -7,12 +7,19 @@ import { HeroBackdrop } from "@/components/HeroBackdrop";
 import { SectionHeading } from "@/components/SectionHeading";
 import { CtaButton } from "@/components/CtaButton";
 import { ImageCard } from "@/components/ImageCard";
+import { listPublicArtists, type PublicArtist } from "@/lib/artists.functions";
 
 
 export const Route = createFileRoute("/artistes")({
-  loader: ({ context }) => context.queryClient.ensureQueryData(seoQueryOptions),
+  loader: async ({ context }) => {
+    const [seo, artists] = await Promise.all([
+      context.queryClient.ensureQueryData(seoQueryOptions),
+      listPublicArtists(),
+    ]);
+    return { seo: seo as SeoConfig, artists };
+  },
   head: ({ loaderData }) => {
-    const cfg = loaderData as SeoConfig | undefined;
+    const cfg = loaderData?.seo;
     const base = cfg?.settings.baseUrl ?? "";
     return pageHead(cfg, "artists", {
       path: "/artistes",
@@ -22,20 +29,11 @@ export const Route = createFileRoute("/artistes")({
   component: ArtistsPage,
 });
 
-const artists = [
-  {
-    name: "REVERSEFLOW",
-    city: "Espagne / France",
-    genres: ["Rap", "Trap", "Expérimental"],
-    bio: "Artiste espagnol basé en France, fondateur de BBH. Univers sombre, énergie live et approche internationale — le point de départ du roster.",
-    badge: "Fondateur / Artiste BBH",
-    tone: "mixed" as const,
-  },
-];
 
 
 
 function ArtistsPage() {
+  const { artists } = Route.useLoaderData() as { artists: PublicArtist[] };
   return (
     <SiteShell>
       {/* Header */}
@@ -71,29 +69,33 @@ function ArtistsPage() {
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-2">
           {artists.map((a) => (
             <article
-              key={a.name}
+              key={a.slug}
               className="group grid gap-0 overflow-hidden rounded-3xl border border-white/10 bg-surface card-hover sm:grid-cols-[1fr_1.2fr]"
             >
               <ImageCard
-                tone={a.tone}
+                tone="mixed"
                 aspect="aspect-square sm:aspect-auto sm:h-full"
                 title=""
                 overlay={false}
                 className="rounded-none border-none"
-                slot="artist_reverseflow"
+                slot={a.is_founder ? "artist_reverseflow" : undefined}
                 alt={`Portrait de ${a.name}`}
               />
 
               <div className="flex flex-col justify-between p-6">
                 <div>
-                  <span className="inline-flex items-center rounded-full border border-electric/30 bg-electric/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-electric-glow">
-                    {a.badge}
-                  </span>
+                  {a.badge && (
+                    <span className="inline-flex items-center rounded-full border border-electric/30 bg-electric/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-electric-glow">
+                      {a.badge}
+                    </span>
+                  )}
                   <h3 className="mt-4 font-display text-2xl font-black tracking-tight">
-                    {a.name}
+                    <Link to="/artistes/$slug" params={{ slug: a.slug }} className="transition hover:text-electric-glow">
+                      {a.name}
+                    </Link>
                   </h3>
                   <div className="mt-1.5 flex items-center gap-1.5 text-xs uppercase tracking-[0.18em] text-muted-foreground">
-                    <MapPin className="size-3" /> {a.city}
+                    <MapPin className="size-3" /> {a.origin}
                   </div>
                   <div className="mt-3 flex flex-wrap gap-1.5">
                     {a.genres.map((g) => (
@@ -107,23 +109,36 @@ function ArtistsPage() {
                   </div>
                   <p className="mt-4 text-sm text-muted-foreground">{a.bio}</p>
                 </div>
-                <div className="mt-6 flex gap-2">
+                <div className="mt-6 flex items-center gap-2">
+                  <Link
+                    to="/artistes/$slug"
+                    params={{ slug: a.slug }}
+                    className="mr-2 inline-flex items-center gap-1.5 rounded-full border border-white/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground transition hover:border-electric/40 hover:text-foreground"
+                  >
+                    Profil <ArrowRight className="size-3.5" />
+                  </Link>
                   <a
-                    href="#"
+                    href={a.instagram ?? "#"}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     aria-label="Instagram"
                     className="grid size-9 place-items-center rounded-full border border-white/10 text-muted-foreground transition hover:border-electric/40 hover:text-foreground"
                   >
                     <Instagram className="size-4" />
                   </a>
                   <a
-                    href="#"
+                    href={a.spotify ?? "#"}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     aria-label="Spotify"
                     className="grid size-9 place-items-center rounded-full border border-white/10 text-muted-foreground transition hover:border-electric/40 hover:text-foreground"
                   >
                     <Music2 className="size-4" />
                   </a>
                   <a
-                    href="#"
+                    href={a.youtube ?? "#"}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     aria-label="YouTube"
                     className="grid size-9 place-items-center rounded-full border border-white/10 text-muted-foreground transition hover:border-electric/40 hover:text-foreground"
                   >

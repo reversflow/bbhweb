@@ -1,3 +1,5 @@
+import { useQuery } from "@tanstack/react-query";
+import type { NavLink } from "@/lib/site-content.shared";
 import { listPublicEvents, getPublicEvent } from "@/lib/events.functions";
 import { getSiteContent } from "@/lib/site-content.functions";
 
@@ -20,3 +22,15 @@ export const siteContentQueryOptions = {
   staleTime: 5 * 60_000,
   gcTime: 30 * 60_000,
 };
+
+export function useSiteContentBundle() {
+  return useQuery(siteContentQueryOptions);
+}
+
+/** Enabled CMS links for one location, sorted; empty when the admin defined none. */
+export function useNavLinks(location: NavLink["location"]): NavLink[] {
+  const { data } = useSiteContentBundle();
+  return (data?.nav ?? [])
+    .filter((l) => l.location === location && l.enabled)
+    .sort((a, b) => a.sort_order - b.sort_order);
+}
