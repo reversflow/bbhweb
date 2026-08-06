@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
+import { WORKSHOPS } from "@/lib/workshops.data";
 
 /**
  * Dynamic sitemap: static pages come from the `seo_pages` table (so the admin
@@ -12,7 +13,7 @@ export const Route = createFileRoute("/sitemap.xml")({
       GET: async () => {
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-        const [settingsRes, pagesRes, songsRes, postsRes] = await Promise.all([
+        const [settingsRes, pagesRes, songsRes, postsRes, eventsRes, artistsRes] = await Promise.all([
           supabaseAdmin.from("site_settings").select("base_url").eq("id", 1).maybeSingle(),
           supabaseAdmin
             .from("seo_pages")
@@ -28,6 +29,15 @@ export const Route = createFileRoute("/sitemap.xml")({
             .select("slug, updated_at")
             .eq("published", true)
             .order("published_at", { ascending: false }),
+          supabaseAdmin
+            .from("events")
+            .select("slug, updated_at, noindex")
+            .eq("published", true)
+            .order("sort_order", { ascending: true }),
+          supabaseAdmin
+            .from("artists")
+            .select("slug, updated_at")
+            .order("sort_order", { ascending: true }),
         ]);
 
         const baseUrl = (settingsRes.data?.base_url ?? "https://bbhweb.lovable.app").replace(
@@ -68,6 +78,33 @@ export const Route = createFileRoute("/sitemap.xml")({
             lastmod: p.updated_at ? new Date(p.updated_at).toISOString() : undefined,
             changefreq: "monthly",
             priority: "0.6",
+          });
+        }
+
+        for (const e of eventsRes.data ?? []) {
+          if (e.noindex) continue;
+          entries.push({
+            path: `/evenements/${e.slug}`,
+            lastmod: e.updated_at ? new Date(e.updated_at).toISOString() : undefined,
+            changefreq: "weekly",
+            priority: "0.8",
+          });
+        }
+
+        for (const a of artistsRes.data ?? []) {
+          entries.push({
+            path: `/artistes/${a.slug}`,
+            lastmod: a.updated_at ? new Date(a.updated_at).toISOString() : undefined,
+            changefreq: "monthly",
+            priority: "0.6",
+          });
+        }
+
+        for (const w of WORKSHOPS) {
+          entries.push({
+            path: `/ateliers/${w.slug}`,
+            changefreq: "yearly",
+            priority: "0.5",
           });
         }
 

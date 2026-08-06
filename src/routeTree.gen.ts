@@ -26,6 +26,8 @@ import { Route as MediaSplatRouteImport } from './routes/media.$'
 import { Route as JournalSlugRouteImport } from './routes/journal.$slug'
 import { Route as EvenementsSlugRouteImport } from './routes/evenements.$slug'
 import { Route as CoverSplatRouteImport } from './routes/cover.$'
+import { Route as AteliersSlugRouteImport } from './routes/ateliers.$slug'
+import { Route as ArtistesSlugRouteImport } from './routes/artistes.$slug'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
@@ -116,6 +118,16 @@ const CoverSplatRoute = CoverSplatRouteImport.update({
   path: '/cover/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AteliersSlugRoute = AteliersSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => AteliersRoute,
+} as any)
+const ArtistesSlugRoute = ArtistesSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => ArtistesRoute,
+} as any)
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -148,8 +160,8 @@ const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/a-propos': typeof AProposRoute
-  '/artistes': typeof ArtistesRoute
-  '/ateliers': typeof AteliersRoute
+  '/artistes': typeof ArtistesRouteWithChildren
+  '/ateliers': typeof AteliersRouteWithChildren
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/evenements': typeof EvenementsRouteWithChildren
@@ -160,6 +172,8 @@ export interface FileRoutesByFullPath {
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/artistes/$slug': typeof ArtistesSlugRoute
+  '/ateliers/$slug': typeof AteliersSlugRoute
   '/cover/$': typeof CoverSplatRoute
   '/evenements/$slug': typeof EvenementsSlugRoute
   '/journal/$slug': typeof JournalSlugRoute
@@ -171,8 +185,8 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/a-propos': typeof AProposRoute
-  '/artistes': typeof ArtistesRoute
-  '/ateliers': typeof AteliersRoute
+  '/artistes': typeof ArtistesRouteWithChildren
+  '/ateliers': typeof AteliersRouteWithChildren
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/evenements': typeof EvenementsRouteWithChildren
@@ -183,6 +197,8 @@ export interface FileRoutesByTo {
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/artistes/$slug': typeof ArtistesSlugRoute
+  '/ateliers/$slug': typeof AteliersSlugRoute
   '/cover/$': typeof CoverSplatRoute
   '/evenements/$slug': typeof EvenementsSlugRoute
   '/journal/$slug': typeof JournalSlugRoute
@@ -196,8 +212,8 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/a-propos': typeof AProposRoute
-  '/artistes': typeof ArtistesRoute
-  '/ateliers': typeof AteliersRoute
+  '/artistes': typeof ArtistesRouteWithChildren
+  '/ateliers': typeof AteliersRouteWithChildren
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/evenements': typeof EvenementsRouteWithChildren
@@ -208,6 +224,8 @@ export interface FileRoutesById {
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
+  '/artistes/$slug': typeof ArtistesSlugRoute
+  '/ateliers/$slug': typeof AteliersSlugRoute
   '/cover/$': typeof CoverSplatRoute
   '/evenements/$slug': typeof EvenementsSlugRoute
   '/journal/$slug': typeof JournalSlugRoute
@@ -233,6 +251,8 @@ export interface FileRouteTypes {
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/admin'
+    | '/artistes/$slug'
+    | '/ateliers/$slug'
     | '/cover/$'
     | '/evenements/$slug'
     | '/journal/$slug'
@@ -256,6 +276,8 @@ export interface FileRouteTypes {
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/admin'
+    | '/artistes/$slug'
+    | '/ateliers/$slug'
     | '/cover/$'
     | '/evenements/$slug'
     | '/journal/$slug'
@@ -280,6 +302,8 @@ export interface FileRouteTypes {
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/_authenticated/admin'
+    | '/artistes/$slug'
+    | '/ateliers/$slug'
     | '/cover/$'
     | '/evenements/$slug'
     | '/journal/$slug'
@@ -293,8 +317,8 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AProposRoute: typeof AProposRoute
-  ArtistesRoute: typeof ArtistesRoute
-  AteliersRoute: typeof AteliersRoute
+  ArtistesRoute: typeof ArtistesRouteWithChildren
+  AteliersRoute: typeof AteliersRouteWithChildren
   AuthRoute: typeof AuthRoute
   ContactRoute: typeof ContactRoute
   EvenementsRoute: typeof EvenementsRouteWithChildren
@@ -431,6 +455,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CoverSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ateliers/$slug': {
+      id: '/ateliers/$slug'
+      path: '/$slug'
+      fullPath: '/ateliers/$slug'
+      preLoaderRoute: typeof AteliersSlugRouteImport
+      parentRoute: typeof AteliersRoute
+    }
+    '/artistes/$slug': {
+      id: '/artistes/$slug'
+      path: '/$slug'
+      fullPath: '/artistes/$slug'
+      preLoaderRoute: typeof ArtistesSlugRouteImport
+      parentRoute: typeof ArtistesRoute
+    }
     '/_authenticated/admin': {
       id: '/_authenticated/admin'
       path: '/admin'
@@ -480,6 +518,30 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
 const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
+interface ArtistesRouteChildren {
+  ArtistesSlugRoute: typeof ArtistesSlugRoute
+}
+
+const ArtistesRouteChildren: ArtistesRouteChildren = {
+  ArtistesSlugRoute: ArtistesSlugRoute,
+}
+
+const ArtistesRouteWithChildren = ArtistesRoute._addFileChildren(
+  ArtistesRouteChildren,
+)
+
+interface AteliersRouteChildren {
+  AteliersSlugRoute: typeof AteliersSlugRoute
+}
+
+const AteliersRouteChildren: AteliersRouteChildren = {
+  AteliersSlugRoute: AteliersSlugRoute,
+}
+
+const AteliersRouteWithChildren = AteliersRoute._addFileChildren(
+  AteliersRouteChildren,
+)
+
 interface EvenementsRouteChildren {
   EvenementsSlugRoute: typeof EvenementsSlugRoute
 }
@@ -518,8 +580,8 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AProposRoute: AProposRoute,
-  ArtistesRoute: ArtistesRoute,
-  AteliersRoute: AteliersRoute,
+  ArtistesRoute: ArtistesRouteWithChildren,
+  AteliersRoute: AteliersRouteWithChildren,
   AuthRoute: AuthRoute,
   ContactRoute: ContactRoute,
   EvenementsRoute: EvenementsRouteWithChildren,
