@@ -161,6 +161,36 @@ export type Database = {
           },
         ]
       }
+      content_links: {
+        Row: {
+          created_at: string
+          id: string
+          sort_order: number
+          source_id: string
+          source_type: string
+          target_id: string
+          target_type: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          sort_order?: number
+          source_id: string
+          source_type: string
+          target_id: string
+          target_type: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          sort_order?: number
+          source_id?: string
+          source_type?: string
+          target_id?: string
+          target_type?: string
+        }
+        Relationships: []
+      }
       event_redirects: {
         Row: {
           created_at: string
@@ -195,6 +225,7 @@ export type Database = {
           address: string
           ai_summary: string
           artists: string[]
+          blocks: Json
           capacity: number | null
           city: string
           contact_email: string
@@ -210,6 +241,8 @@ export type Database = {
           featured: boolean
           full_description: string
           gallery: Json
+          hero_video: string
+          hero_video_poster: string
           id: string
           image_alt: string
           is_free: boolean
@@ -243,6 +276,7 @@ export type Database = {
           address?: string
           ai_summary?: string
           artists?: string[]
+          blocks?: Json
           capacity?: number | null
           city?: string
           contact_email?: string
@@ -258,6 +292,8 @@ export type Database = {
           featured?: boolean
           full_description?: string
           gallery?: Json
+          hero_video?: string
+          hero_video_poster?: string
           id?: string
           image_alt?: string
           is_free?: boolean
@@ -291,6 +327,7 @@ export type Database = {
           address?: string
           ai_summary?: string
           artists?: string[]
+          blocks?: Json
           capacity?: number | null
           city?: string
           contact_email?: string
@@ -306,6 +343,8 @@ export type Database = {
           featured?: boolean
           full_description?: string
           gallery?: Json
+          hero_video?: string
+          hero_video_poster?: string
           id?: string
           image_alt?: string
           is_free?: boolean
@@ -340,48 +379,63 @@ export type Database = {
       journal_posts: {
         Row: {
           artist_id: string | null
+          blocks: Json
           category: string | null
           content: string
           cover_url: string | null
           created_at: string
           excerpt: string | null
+          featured: boolean
           id: string
           media: Json
           published: boolean
           published_at: string
           slug: string
+          tags: string[]
           title: string
           updated_at: string
+          video_poster: string
+          video_url: string
         }
         Insert: {
           artist_id?: string | null
+          blocks?: Json
           category?: string | null
           content?: string
           cover_url?: string | null
           created_at?: string
           excerpt?: string | null
+          featured?: boolean
           id?: string
           media?: Json
           published?: boolean
           published_at?: string
           slug: string
+          tags?: string[]
           title: string
           updated_at?: string
+          video_poster?: string
+          video_url?: string
         }
         Update: {
           artist_id?: string | null
+          blocks?: Json
           category?: string | null
           content?: string
           cover_url?: string | null
           created_at?: string
           excerpt?: string | null
+          featured?: boolean
           id?: string
           media?: Json
           published?: boolean
           published_at?: string
           slug?: string
+          tags?: string[]
           title?: string
           updated_at?: string
+          video_poster?: string
+          video_url?: string
         }
         Relationships: [
           {
@@ -532,38 +586,65 @@ export type Database = {
         Row: {
           alt_text: string
           caption: string
+          created_at: string
+          duration_seconds: number | null
+          file_size: number | null
+          height: number | null
+          is_library: boolean
+          media_type: string
+          mime_type: string
           object_position: string
           page_key: string
+          poster_path: string
           section_key: string
           slot: string
           storage_path: string
           title: string
           updated_at: string
           updated_by: string | null
+          width: number | null
         }
         Insert: {
           alt_text?: string
           caption?: string
+          created_at?: string
+          duration_seconds?: number | null
+          file_size?: number | null
+          height?: number | null
+          is_library?: boolean
+          media_type?: string
+          mime_type?: string
           object_position?: string
           page_key?: string
+          poster_path?: string
           section_key?: string
           slot: string
           storage_path: string
           title?: string
           updated_at?: string
           updated_by?: string | null
+          width?: number | null
         }
         Update: {
           alt_text?: string
           caption?: string
+          created_at?: string
+          duration_seconds?: number | null
+          file_size?: number | null
+          height?: number | null
+          is_library?: boolean
+          media_type?: string
+          mime_type?: string
           object_position?: string
           page_key?: string
+          poster_path?: string
           section_key?: string
           slot?: string
           storage_path?: string
           title?: string
           updated_at?: string
           updated_by?: string | null
+          width?: number | null
         }
         Relationships: []
       }
@@ -650,6 +731,8 @@ export type Database = {
           streaming_links: Json
           title: string
           updated_at: string
+          video_poster: string
+          video_url: string
         }
         Insert: {
           artist_id: string
@@ -673,6 +756,8 @@ export type Database = {
           streaming_links?: Json
           title: string
           updated_at?: string
+          video_poster?: string
+          video_url?: string
         }
         Update: {
           artist_id?: string
@@ -696,6 +781,8 @@ export type Database = {
           streaming_links?: Json
           title?: string
           updated_at?: string
+          video_poster?: string
+          video_url?: string
         }
         Relationships: [
           {

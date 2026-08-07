@@ -1,6 +1,9 @@
 /** Shared, browser-safe helpers and types for the events system. */
 
+import { parseBlocks, type Block } from "@/lib/blocks.shared";
+
 export type EventRecord = {
+
   id: string;
   slug: string;
   title: string;
@@ -45,6 +48,9 @@ export type EventRecord = {
   noindex: boolean;
   published: boolean;
   sort_order: number;
+  blocks: Block[];
+  hero_video: string;
+  hero_video_poster: string;
   created_at?: string;
   updated_at?: string;
 };
@@ -113,6 +119,9 @@ function strArray(v: any): string[] {
 export function mapEvent(row: any): EventRecord {
   return {
     ...row,
+    blocks: parseBlocks(row.blocks),
+    hero_video: row.hero_video ?? "",
+    hero_video_poster: row.hero_video_poster ?? "",
     gallery: strArray(row.gallery),
     social_links: strArray(row.social_links),
     artists: strArray(row.artists),

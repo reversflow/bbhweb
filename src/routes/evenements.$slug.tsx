@@ -14,6 +14,8 @@ import {
   type EventRecord,
 } from "@/lib/events.shared";
 import { sanitizeRichText } from "@/lib/site-content.shared";
+import { BlockRenderer } from "@/components/blocks/BlockRenderer";
+import { SiteVideo } from "@/components/SiteVideo";
 import { Calendar, MapPin, Clock, Ticket, Users, Mail, Phone, ArrowRight, ArrowLeft } from "lucide-react";
 
 export const Route = createFileRoute("/evenements/$slug")({
@@ -185,6 +187,16 @@ function EventDetailPage() {
           )}
         </header>
 
+        {event.hero_video ? (
+          <div className="mt-10">
+            <SiteVideo
+              path={event.hero_video}
+              poster={event.hero_video_poster || undefined}
+              label={event.title}
+              className="rounded-2xl border border-white/10"
+            />
+          </div>
+        ) : (
         <div className="mt-10">
           <ImageCard
             slot={event.main_image || undefined}
@@ -196,6 +208,7 @@ function EventDetailPage() {
             eager
           />
         </div>
+        )}
 
         <dl className="mt-8 grid gap-4 rounded-2xl border border-white/10 bg-surface/60 p-6 sm:grid-cols-2">
           {date && (
@@ -280,6 +293,9 @@ function EventDetailPage() {
             />
           </section>
         )}
+
+        <BlockRenderer blocks={event.blocks} />
+
 
         {event.artists.length > 0 && (
           <section className="mt-12">

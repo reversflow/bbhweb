@@ -13,6 +13,9 @@ import {
   formatEventDate,
   type EventRecord,
 } from "@/lib/events.shared";
+import { BlockEditor } from "@/components/admin/BlockEditor";
+import { MediaField } from "@/components/admin/MediaPicker";
+import type { Block } from "@/lib/blocks.shared";
 import { Plus, Trash2, Copy, ExternalLink } from "lucide-react";
 
 const empty: Partial<EventRecord> = {
@@ -51,6 +54,9 @@ const empty: Partial<EventRecord> = {
   noindex: false,
   published: false,
   sort_order: 100,
+  blocks: [],
+  hero_video: "",
+  hero_video_poster: "",
 };
 
 const field =
@@ -95,6 +101,9 @@ export function EventsManager() {
           ...(editing as Record<string, unknown>),
           slug,
           gallery: editing.gallery ?? [],
+          blocks: editing.blocks ?? [],
+          hero_video: editing.hero_video ?? "",
+          hero_video_poster: editing.hero_video_poster ?? "",
           social_links: editing.social_links ?? [],
           artists: editing.artists ?? [],
           partners: editing.partners ?? [],
@@ -365,6 +374,29 @@ export function EventsManager() {
               onChange={(e) => set("full_description", e.target.value)}
             />
           </div>
+          <div className="rounded-2xl border border-white/10 bg-background/40 p-5">
+            <MediaField
+              kind="video"
+              label="Vidéo de couverture (MP4, optionnel)"
+              value={editing.hero_video ?? ""}
+              poster={editing.hero_video_poster ?? ""}
+              onChange={(m) =>
+                setEditing((prev) => ({
+                  ...(prev ?? {}),
+                  hero_video: m.path,
+                  hero_video_poster: m.posterPath,
+                }))
+              }
+            />
+          </div>
+
+          <div className="rounded-2xl border border-white/10 bg-background/40 p-5">
+            <BlockEditor
+              blocks={(editing.blocks ?? []) as Block[]}
+              onChange={(next) => set("blocks", next)}
+            />
+          </div>
+
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
               <p className={label}>Titre SEO</p>
