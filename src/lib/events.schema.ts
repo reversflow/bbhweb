@@ -1,6 +1,32 @@
 import { z } from "zod";
 
+const BlockSchema = z.discriminatedUnion("type", [
+  z.object({ id: z.string().max(80), type: z.literal("heading"), text: z.string().max(300), level: z.union([z.literal(2), z.literal(3)]) }),
+  z.object({ id: z.string().max(80), type: z.literal("text"), text: z.string().max(20000) }),
+  z.object({ id: z.string().max(80), type: z.literal("image"), path: z.string().max(500), alt: z.string().max(300), caption: z.string().max(400) }),
+  z.object({
+    id: z.string().max(80),
+    type: z.literal("video"),
+    path: z.string().max(500),
+    poster: z.string().max(500),
+    caption: z.string().max(400),
+    autoplay: z.boolean(),
+    loop: z.boolean(),
+  }),
+  z.object({
+    id: z.string().max(80),
+    type: z.literal("gallery"),
+    items: z.array(z.object({ path: z.string().max(500), alt: z.string().max(300) })).max(40),
+  }),
+  z.object({ id: z.string().max(80), type: z.literal("quote"), text: z.string().max(2000), author: z.string().max(200) }),
+  z.object({ id: z.string().max(80), type: z.literal("cta"), label: z.string().max(120), url: z.string().max(600) }),
+  z.object({ id: z.string().max(80), type: z.literal("embed"), url: z.string().max(600), title: z.string().max(200) }),
+]);
+
+export const BlocksSchema = z.array(BlockSchema).max(80).default([]);
+
 export const EventInput = z.object({
+
   id: z.string().uuid().optional(),
   slug: z.string().min(2).max(120),
   title: z.string().min(1).max(200),
@@ -45,7 +71,11 @@ export const EventInput = z.object({
   noindex: z.boolean().default(false),
   published: z.boolean().default(false),
   sort_order: z.number().int().default(100),
+  blocks: BlocksSchema,
+  hero_video: z.string().max(500).default(""),
+  hero_video_poster: z.string().max(500).default(""),
 });
+
 
 export type EventInputType = z.infer<typeof EventInput>;
 
