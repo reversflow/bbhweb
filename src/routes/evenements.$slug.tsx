@@ -294,6 +294,9 @@ function EventDetailPage() {
           </section>
         )}
 
+        <BlockRenderer blocks={event.blocks} />
+
+
         {event.artists.length > 0 && (
           <section className="mt-12">
             <h2 className="font-display text-2xl font-black tracking-tight">Artistes</h2>
