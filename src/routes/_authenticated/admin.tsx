@@ -12,7 +12,9 @@ import { EventsManager } from "@/components/admin/EventsManager";
 import { ContentManager } from "@/components/admin/ContentManager";
 import { NavManager } from "@/components/admin/NavManager";
 import { getAdminStats } from "@/lib/music.functions";
-import { LogOut, Music, BookOpen, MessageCircle, LayoutDashboard, ShieldAlert, ArrowLeft, ImageIcon, Search, CalendarDays, Type, Link2 } from "lucide-react";
+import { ArtistsManager } from "@/components/admin/ArtistsManager";
+import { LibraryManager } from "@/components/admin/LibraryManager";
+import { LogOut, Music, BookOpen, MessageCircle, LayoutDashboard, ShieldAlert, ArrowLeft, ImageIcon, Search, CalendarDays, Type, Link2, Users, Film } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({
