@@ -223,7 +223,7 @@ export const upsertArtist = createServerFn({ method: "POST" })
     await requireAdmin(context.userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { id, ...rest } = data;
-    const payload = rest as unknown as Record<string, never>;
+    const payload = rest as never;
     const q = id
       ? supabaseAdmin.from("artists").update(payload).eq("id", id).select("id").single()
       : supabaseAdmin.from("artists").insert(payload).select("id").single();
