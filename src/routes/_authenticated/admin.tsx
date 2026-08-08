@@ -150,6 +150,8 @@ function AdminPage() {
         <div className="mt-8">
           {tab === "dashboard" && <Dashboard onOpen={setTab} />}
           {tab === "events" && <EventsManager />}
+          {tab === "artists" && <ArtistsManager />}
+          {tab === "library" && <LibraryManager />}
           {tab === "music" && <MusicManager />}
           {tab === "journal" && <JournalManager />}
           {tab === "comments" && <CommentsManager />}
