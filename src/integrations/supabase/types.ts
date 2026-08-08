@@ -18,55 +18,100 @@ export type Database = {
         Row: {
           badge: string | null
           bio: string | null
+          blocks: Json
+          booking_label: string
+          booking_url: string
           created_at: string
+          gallery: Json
           genres: string[]
+          hero_media: string
+          hero_poster: string
           id: string
           instagram: string | null
           is_founder: boolean
+          links: Json
           name: string
           origin: string | null
           portrait_url: string | null
+          published: boolean
           role: string | null
+          short_description: string
           slug: string
           sort_order: number
+          soundcloud: string
           spotify: string | null
+          tags: string[]
+          tiktok: string
+          universe: string
           updated_at: string
+          videos: Json
+          website: string
           youtube: string | null
         }
         Insert: {
           badge?: string | null
           bio?: string | null
+          blocks?: Json
+          booking_label?: string
+          booking_url?: string
           created_at?: string
+          gallery?: Json
           genres?: string[]
+          hero_media?: string
+          hero_poster?: string
           id?: string
           instagram?: string | null
           is_founder?: boolean
+          links?: Json
           name: string
           origin?: string | null
           portrait_url?: string | null
+          published?: boolean
           role?: string | null
+          short_description?: string
           slug: string
           sort_order?: number
+          soundcloud?: string
           spotify?: string | null
+          tags?: string[]
+          tiktok?: string
+          universe?: string
           updated_at?: string
+          videos?: Json
+          website?: string
           youtube?: string | null
         }
         Update: {
           badge?: string | null
           bio?: string | null
+          blocks?: Json
+          booking_label?: string
+          booking_url?: string
           created_at?: string
+          gallery?: Json
           genres?: string[]
+          hero_media?: string
+          hero_poster?: string
           id?: string
           instagram?: string | null
           is_founder?: boolean
+          links?: Json
           name?: string
           origin?: string | null
           portrait_url?: string | null
+          published?: boolean
           role?: string | null
+          short_description?: string
           slug?: string
           sort_order?: number
+          soundcloud?: string
           spotify?: string | null
+          tags?: string[]
+          tiktok?: string
+          universe?: string
           updated_at?: string
+          videos?: Json
+          website?: string
           youtube?: string | null
         }
         Relationships: []
