@@ -12,7 +12,9 @@ import { EventsManager } from "@/components/admin/EventsManager";
 import { ContentManager } from "@/components/admin/ContentManager";
 import { NavManager } from "@/components/admin/NavManager";
 import { getAdminStats } from "@/lib/music.functions";
-import { LogOut, Music, BookOpen, MessageCircle, LayoutDashboard, ShieldAlert, ArrowLeft, ImageIcon, Search, CalendarDays, Type, Link2 } from "lucide-react";
+import { ArtistsManager } from "@/components/admin/ArtistsManager";
+import { LibraryManager } from "@/components/admin/LibraryManager";
+import { LogOut, Music, BookOpen, MessageCircle, LayoutDashboard, ShieldAlert, ArrowLeft, ImageIcon, Search, CalendarDays, Type, Link2, Users, Film } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({
@@ -24,7 +26,7 @@ export const Route = createFileRoute("/_authenticated/admin")({
   component: AdminPage,
 });
 
-type Tab = "dashboard" | "events" | "music" | "journal" | "comments" | "images" | "content" | "nav" | "seo";
+type Tab = "dashboard" | "events" | "artists" | "music" | "journal" | "comments" | "images" | "library" | "content" | "nav" | "seo";
 
 function AdminPage() {
   const navigate = useNavigate();
@@ -116,6 +118,12 @@ function AdminPage() {
           <TabBtn active={tab === "events"} onClick={() => setTab("events")} icon={<CalendarDays className="size-4" />}>
             Événements
           </TabBtn>
+          <TabBtn active={tab === "artists"} onClick={() => setTab("artists")} icon={<Users className="size-4" />}>
+            Artistes
+          </TabBtn>
+          <TabBtn active={tab === "library"} onClick={() => setTab("library")} icon={<Film className="size-4" />}>
+            Médiathèque
+          </TabBtn>
           <TabBtn active={tab === "music"} onClick={() => setTab("music")} icon={<Music className="size-4" />}>
             Musique
           </TabBtn>
@@ -142,6 +150,8 @@ function AdminPage() {
         <div className="mt-8">
           {tab === "dashboard" && <Dashboard onOpen={setTab} />}
           {tab === "events" && <EventsManager />}
+          {tab === "artists" && <ArtistsManager />}
+          {tab === "library" && <LibraryManager />}
           {tab === "music" && <MusicManager />}
           {tab === "journal" && <JournalManager />}
           {tab === "comments" && <CommentsManager />}
