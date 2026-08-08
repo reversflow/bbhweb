@@ -118,6 +118,12 @@ function AdminPage() {
           <TabBtn active={tab === "events"} onClick={() => setTab("events")} icon={<CalendarDays className="size-4" />}>
             Événements
           </TabBtn>
+          <TabBtn active={tab === "artists"} onClick={() => setTab("artists")} icon={<Users className="size-4" />}>
+            Artistes
+          </TabBtn>
+          <TabBtn active={tab === "library"} onClick={() => setTab("library")} icon={<Film className="size-4" />}>
+            Médiathèque
+          </TabBtn>
           <TabBtn active={tab === "music"} onClick={() => setTab("music")} icon={<Music className="size-4" />}>
             Musique
           </TabBtn>
