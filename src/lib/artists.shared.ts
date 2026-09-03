@@ -1,5 +1,6 @@
 /** Browser-safe artist model shared by the admin editor and the public pages. */
 import { parseBlocks, type Block } from "@/lib/blocks.shared";
+import { parseTranslations, tField, type Locale, type Translations } from "@/lib/i18n";
 
 export type ArtistGalleryItem = { path: string; alt: string };
 export type ArtistVideo = { path: string; poster: string; title: string };
@@ -35,6 +36,7 @@ export type ArtistRecord = {
   isFounder: boolean;
   published: boolean;
   sortOrder: number;
+  translations: Translations;
   updatedAt: string | null;
 };
 
@@ -106,6 +108,7 @@ export function mapArtist(r: any): ArtistRecord {
     isFounder: r.is_founder === true,
     published: r.published !== false,
     sortOrder: typeof r.sort_order === "number" ? r.sort_order : 0,
+    translations: parseTranslations(r.translations),
     updatedAt: typeof r.updated_at === "string" ? r.updated_at : null,
   };
 }
@@ -154,4 +157,18 @@ export function slugifyArtist(v: string) {
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/(^-|-$)/g, "")
     .slice(0, 80);
+}
+
+/** Artist fields that can be translated per locale. */
+export const ARTIST_I18N_FIELDS = ["name", "short_description", "bio", "universe"] as const;
+
+/** Return a copy of the artist with translatable fields resolved for a locale. */
+export function localizeArtist(a: ArtistRecord, locale: Locale): ArtistRecord {
+  return {
+    ...a,
+    name: tField(a.translations, locale, "name", a.name),
+    shortDescription: tField(a.translations, locale, "short_description", a.shortDescription),
+    bio: tField(a.translations, locale, "bio", a.bio),
+    universe: tField(a.translations, locale, "universe", a.universe),
+  };
 }
