@@ -213,6 +213,9 @@ const ArtistInput = z.object({
   is_founder: z.boolean().default(false),
   published: z.boolean().default(true),
   sort_order: z.number().int().min(0).max(9999).default(0),
+  translations: z
+    .record(z.string(), z.record(z.string(), z.string().max(20000)))
+    .default({}),
 });
 
 /** Admin: create or update an artist. */

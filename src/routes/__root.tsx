@@ -16,6 +16,7 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { PlayerProvider } from "@/contexts/player-context";
+import { LocaleProvider } from "@/lib/i18n";
 import { GlobalPlayerBar } from "@/components/player/GlobalPlayerBar";
 
 function NotFoundComponent() {
@@ -164,12 +165,14 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <PlayerProvider>
-        <div className="pb-24">
-          <Outlet />
-        </div>
-        <GlobalPlayerBar />
-      </PlayerProvider>
+      <LocaleProvider>
+        <PlayerProvider>
+          <div className="pb-24">
+            <Outlet />
+          </div>
+          <GlobalPlayerBar />
+        </PlayerProvider>
+      </LocaleProvider>
     </QueryClientProvider>
   );
 }

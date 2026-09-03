@@ -5,6 +5,18 @@ import { useHydrated } from "@/hooks/use-hydrated";
 import { contentText } from "@/lib/site-content.shared";
 import type { NavLink } from "@/lib/site-content.shared";
 import { Instagram, Youtube, Music2, Mail, Globe } from "lucide-react";
+import { useLocale, useT, DEFAULT_LOCALE } from "@/lib/i18n";
+
+const NAV_KEYS: Record<string, string> = {
+  "/": "nav.home",
+  "/musique": "nav.music",
+  "/evenements": "nav.events",
+  "/ateliers": "nav.workshops",
+  "/artistes": "nav.artists",
+  "/journal": "nav.journal",
+  "/a-propos": "nav.about",
+  "/contact": "nav.contact",
+};
 
 type SimpleLink = Pick<NavLink, "label" | "url" | "external" | "new_tab">;
 
@@ -33,12 +45,21 @@ function socialIcon(label: string) {
 
 export function Footer() {
   const hydrated = useHydrated();
+  const { locale } = useLocale();
+  const t = useT();
   const { data: bundle } = useSiteContentBundle();
   const cmsFooter = useNavLinks("footer");
   const cmsLegal = useNavLinks("legal");
   const cmsSocial = useNavLinks("social");
 
-  const links = hydrated && cmsFooter.length > 0 ? cmsFooter : defaultFooterLinks;
+  const rawLinks = hydrated && cmsFooter.length > 0 ? cmsFooter : defaultFooterLinks;
+  const links: SimpleLink[] =
+    locale === DEFAULT_LOCALE
+      ? rawLinks
+      : rawLinks.map((l) => {
+          const key = NAV_KEYS[l.url];
+          return key ? { ...l, label: t(key) } : l;
+        });
   const socials: SimpleLink[] = hydrated && cmsSocial.length > 0 ? cmsSocial : defaultSocial;
   const legal = hydrated ? cmsLegal : [];
   const cms = hydrated ? bundle : undefined;
