@@ -8,8 +8,21 @@ import { useNavLinks } from "@/hooks/use-content";
 import { useHydrated } from "@/hooks/use-hydrated";
 import { NavItem } from "@/components/NavItem";
 import type { NavLink } from "@/lib/site-content.shared";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { useLocale, useT, DEFAULT_LOCALE } from "@/lib/i18n";
 
 type SimpleLink = Pick<NavLink, "label" | "url" | "external" | "new_tab">;
+
+const NAV_KEYS: Record<string, string> = {
+  "/": "nav.home",
+  "/musique": "nav.music",
+  "/evenements": "nav.events",
+  "/ateliers": "nav.workshops",
+  "/artistes": "nav.artists",
+  "/journal": "nav.journal",
+  "/a-propos": "nav.about",
+  "/contact": "nav.contact",
+};
 
 const defaultLinks: SimpleLink[] = [
   { url: "/", label: "Accueil", external: false, new_tab: false },
@@ -28,7 +41,17 @@ export function Navbar() {
   const { isAdmin } = useIsAdmin();
   const hydrated = useHydrated();
   const cmsLinks = useNavLinks("header");
-  const links: SimpleLink[] = hydrated && cmsLinks.length > 0 ? cmsLinks : defaultLinks;
+  const { locale } = useLocale();
+  const t = useT();
+  const rawLinks: SimpleLink[] = hydrated && cmsLinks.length > 0 ? cmsLinks : defaultLinks;
+  // Known site sections use the UI dictionary; custom CMS links keep their label.
+  const links: SimpleLink[] =
+    locale === DEFAULT_LOCALE
+      ? rawLinks
+      : rawLinks.map((l) => {
+          const key = NAV_KEYS[l.url];
+          return key ? { ...l, label: t(key) } : l;
+        });
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setAuthed(!!data.user));
