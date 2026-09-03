@@ -164,12 +164,14 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <PlayerProvider>
-        <div className="pb-24">
-          <Outlet />
-        </div>
-        <GlobalPlayerBar />
-      </PlayerProvider>
+      <LocaleProvider>
+        <PlayerProvider>
+          <div className="pb-24">
+            <Outlet />
+          </div>
+          <GlobalPlayerBar />
+        </PlayerProvider>
+      </LocaleProvider>
     </QueryClientProvider>
   );
 }
