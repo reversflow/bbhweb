@@ -42,6 +42,7 @@ export type Database = {
           spotify: string | null
           tags: string[]
           tiktok: string
+          translations: Json
           universe: string
           updated_at: string
           videos: Json
@@ -75,6 +76,7 @@ export type Database = {
           spotify?: string | null
           tags?: string[]
           tiktok?: string
+          translations?: Json
           universe?: string
           updated_at?: string
           videos?: Json
@@ -108,6 +110,7 @@ export type Database = {
           spotify?: string | null
           tags?: string[]
           tiktok?: string
+          translations?: Json
           universe?: string
           updated_at?: string
           videos?: Json
@@ -314,6 +317,7 @@ export type Database = {
           ticket_price: number | null
           ticket_url: string
           title: string
+          translations: Json
           updated_at: string
           venue_name: string
         }
@@ -365,6 +369,7 @@ export type Database = {
           ticket_price?: number | null
           ticket_url?: string
           title: string
+          translations?: Json
           updated_at?: string
           venue_name?: string
         }
@@ -416,6 +421,7 @@ export type Database = {
           ticket_price?: number | null
           ticket_url?: string
           title?: string
+          translations?: Json
           updated_at?: string
           venue_name?: string
         }
@@ -438,6 +444,7 @@ export type Database = {
           slug: string
           tags: string[]
           title: string
+          translations: Json
           updated_at: string
           video_poster: string
           video_url: string
@@ -458,6 +465,7 @@ export type Database = {
           slug: string
           tags?: string[]
           title: string
+          translations?: Json
           updated_at?: string
           video_poster?: string
           video_url?: string
@@ -478,6 +486,7 @@ export type Database = {
           slug?: string
           tags?: string[]
           title?: string
+          translations?: Json
           updated_at?: string
           video_poster?: string
           video_url?: string
@@ -702,6 +711,9 @@ export type Database = {
           country: string
           created_at: string
           default_description: string
+          default_locale: string
+          enabled_locales: string[]
+          fallback_locale: string
           google_site_verification: string
           id: number
           keywords: string[]
@@ -721,6 +733,9 @@ export type Database = {
           country?: string
           created_at?: string
           default_description?: string
+          default_locale?: string
+          enabled_locales?: string[]
+          fallback_locale?: string
           google_site_verification?: string
           id?: number
           keywords?: string[]
@@ -740,6 +755,9 @@ export type Database = {
           country?: string
           created_at?: string
           default_description?: string
+          default_locale?: string
+          enabled_locales?: string[]
+          fallback_locale?: string
           google_site_verification?: string
           id?: number
           keywords?: string[]
@@ -775,6 +793,7 @@ export type Database = {
           slug: string
           streaming_links: Json
           title: string
+          translations: Json
           updated_at: string
           video_poster: string
           video_url: string
@@ -800,6 +819,7 @@ export type Database = {
           slug: string
           streaming_links?: Json
           title: string
+          translations?: Json
           updated_at?: string
           video_poster?: string
           video_url?: string
@@ -825,6 +845,7 @@ export type Database = {
           slug?: string
           streaming_links?: Json
           title?: string
+          translations?: Json
           updated_at?: string
           video_poster?: string
           video_url?: string
