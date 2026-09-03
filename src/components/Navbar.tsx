@@ -67,7 +67,7 @@ export function Navbar() {
         <Link to="/" className="group flex items-center gap-2" onClick={() => setOpen(false)}>
           <BrandLogo className="text-2xl" imgClassName="h-8" />
           <span className="hidden text-[10px] font-medium uppercase tracking-[0.25em] text-muted-foreground sm:inline">
-            Association
+            {t("nav.association")}
           </span>
         </Link>
 
@@ -84,36 +84,40 @@ export function Navbar() {
         </nav>
 
         <div className="hidden items-center gap-2 md:flex">
+          <LanguageSwitcher />
           {authed && isAdmin ? (
             <Link
               to="/admin"
               className="inline-flex items-center gap-1.5 rounded-full border border-electric/40 bg-electric/10 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-electric-glow transition hover:bg-electric/20"
             >
-              <ShieldCheck className="size-3.5" /> Admin
+              <ShieldCheck className="size-3.5" /> {t("auth.admin")}
             </Link>
           ) : (
             <Link
               to="/auth"
               className="inline-flex items-center gap-1.5 rounded-full border border-white/10 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-muted-foreground transition hover:border-white/30 hover:text-foreground"
             >
-              <LogIn className="size-3.5" /> Connexion
+              <LogIn className="size-3.5" /> {t("auth.login")}
             </Link>
           )}
           <Link
             to="/contact"
             className="inline-flex items-center rounded-full bg-white px-5 py-2 text-sm font-semibold text-black transition-transform hover:scale-105"
           >
-            Nous contacter
+            {t("cta.contactUs")}
           </Link>
         </div>
 
-        <button
-          className="rounded-full border border-white/10 p-2 md:hidden"
+        <div className="flex items-center gap-2 md:hidden">
+          <LanguageSwitcher />
+          <button
+          className="rounded-full border border-white/10 p-2"
           onClick={() => setOpen((o) => !o)}
           aria-label="Menu"
         >
           {open ? <X className="size-5" /> : <Menu className="size-5" />}
-        </button>
+          </button>
+        </div>
       </div>
 
       {open && (
@@ -136,7 +140,7 @@ export function Navbar() {
                   onClick={() => setOpen(false)}
                   className="inline-flex items-center gap-2 rounded-full border border-electric/40 bg-electric/10 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-electric-glow"
                 >
-                  <ShieldCheck className="size-3.5" /> Espace admin
+                  <ShieldCheck className="size-3.5" /> {t("auth.adminSpace")}
                 </Link>
               ) : (
                 <Link
@@ -144,7 +148,7 @@ export function Navbar() {
                   onClick={() => setOpen(false)}
                   className="inline-flex items-center gap-2 rounded-full border border-white/10 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-muted-foreground"
                 >
-                  <LogIn className="size-3.5" /> Connexion
+                  <LogIn className="size-3.5" /> {t("auth.login")}
                 </Link>
               )}
             </div>
