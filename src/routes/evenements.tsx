@@ -74,6 +74,7 @@ function EventsPage() {
     events: EventRecord[];
     bundle: SiteContentBundle;
   };
+  const events = rawEvents.map((e) => localizeEvent(e, locale));
   const upcoming = events.filter((e) => e.status !== "past");
   const past = events.filter((e) => e.status === "past");
   const artistsCta = contentLink(bundle, "events.cta.artists", "Voir les artistes", "/artistes");
