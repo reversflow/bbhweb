@@ -129,6 +129,8 @@ function EventDetailPage() {
     related: EventRecord[];
     redirectTo: string | null;
   };
+  const event = rawEvent ? localizeEvent(rawEvent, locale) : null;
+  const related = rawRelated.map((r) => localizeEvent(r, locale));
   const navigate = useNavigate();
 
   useEffect(() => {
