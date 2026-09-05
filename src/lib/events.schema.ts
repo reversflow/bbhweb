@@ -74,6 +74,7 @@ export const EventInput = z.object({
   blocks: BlocksSchema,
   hero_video: z.string().max(500).default(""),
   hero_video_poster: z.string().max(500).default(""),
+  translations: z.record(z.string(), z.record(z.string(), z.string().max(20000))).default({}),
 });
 
 

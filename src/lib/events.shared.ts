@@ -1,6 +1,7 @@
 /** Shared, browser-safe helpers and types for the events system. */
 
 import { parseBlocks, type Block } from "@/lib/blocks.shared";
+import { parseTranslations, tField, type Locale, type Translations } from "@/lib/i18n";
 
 export type EventRecord = {
 
@@ -51,6 +52,7 @@ export type EventRecord = {
   blocks: Block[];
   hero_video: string;
   hero_video_poster: string;
+  translations: Translations;
   created_at?: string;
   updated_at?: string;
 };
@@ -122,6 +124,7 @@ export function mapEvent(row: any): EventRecord {
     blocks: parseBlocks(row.blocks),
     hero_video: row.hero_video ?? "",
     hero_video_poster: row.hero_video_poster ?? "",
+    translations: parseTranslations(row.translations),
     gallery: strArray(row.gallery),
     social_links: strArray(row.social_links),
     artists: strArray(row.artists),
@@ -132,3 +135,13 @@ export function mapEvent(row: any): EventRecord {
   } as EventRecord;
 }
 /* eslint-enable @typescript-eslint/no-explicit-any */
+
+/** Resolve the translatable event fields for a locale (French fallback). */
+export function localizeEvent(e: EventRecord, locale: Locale): EventRecord {
+  return {
+    ...e,
+    title: tField(e.translations, locale, "title", e.title),
+    short_description: tField(e.translations, locale, "short_description", e.short_description),
+    full_description: tField(e.translations, locale, "full_description", e.full_description),
+  };
+}
