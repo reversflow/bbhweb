@@ -379,6 +379,20 @@ export function EventsManager() {
             />
           </div>
           <div className="rounded-2xl border border-white/10 bg-background/40 p-5">
+            <p className={label}>Traductions (ES / EN)</p>
+            <div className="mt-3">
+              <TranslationsEditor
+                value={(editing.translations ?? {}) as Translations}
+                onChange={(t: Translations) => set("translations", t as never)}
+                fields={[
+                  { key: "title", label: "Titre", source: editing.title ?? "" },
+                  { key: "short_description", label: "Description courte", rows: 3, source: editing.short_description ?? "" },
+                  { key: "full_description", label: "Description complète", rows: 6, source: editing.full_description ?? "" },
+                ]}
+              />
+            </div>
+          </div>
+          <div className="rounded-2xl border border-white/10 bg-background/40 p-5">
             <MediaField
               kind="video"
               label="Vidéo de couverture (MP4, optionnel)"
