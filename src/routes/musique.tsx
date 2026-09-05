@@ -1,3 +1,4 @@
+import { useLocale, localizeFields } from "@/lib/i18n";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { seoQueryOptions, type SeoConfig } from "@/hooks/use-seo";
 import { pageHead, breadcrumbJsonLd, absoluteUrl } from "@/lib/seo";
@@ -49,7 +50,9 @@ export const Route = createFileRoute("/musique")({
 type Song = PublicSong;
 
 function MusicPage() {
-  const { songs: allSongs } = Route.useLoaderData() as { songs: Song[] };
+  const { locale } = useLocale();
+  const { songs: rawSongs } = Route.useLoaderData() as { songs: Song[] };
+  const allSongs = rawSongs.map((s) => localizeFields(s, locale, ["title", "description"]));
   const loading = false;
   const songs = [...allSongs].sort(
     (a, b) => Number(b.featured) - Number(a.featured),

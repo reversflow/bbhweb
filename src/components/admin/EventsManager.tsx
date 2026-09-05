@@ -15,6 +15,9 @@ import {
 } from "@/lib/events.shared";
 import { BlockEditor } from "@/components/admin/BlockEditor";
 import { MediaField } from "@/components/admin/MediaPicker";
+import { TranslationsEditor } from "@/components/admin/TranslationsEditor";
+import type { Translations } from "@/lib/i18n";
+
 import type { Block } from "@/lib/blocks.shared";
 import { Plus, Trash2, Copy, ExternalLink } from "lucide-react";
 
@@ -107,6 +110,7 @@ export function EventsManager() {
           social_links: editing.social_links ?? [],
           artists: editing.artists ?? [],
           partners: editing.partners ?? [],
+          translations: editing.translations ?? {},
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } as any,
       });
@@ -373,6 +377,20 @@ export function EventsManager() {
               value={editing.full_description ?? ""}
               onChange={(e) => set("full_description", e.target.value)}
             />
+          </div>
+          <div className="rounded-2xl border border-white/10 bg-background/40 p-5">
+            <p className={label}>Traductions (ES / EN)</p>
+            <div className="mt-3">
+              <TranslationsEditor
+                value={(editing.translations ?? {}) as Translations}
+                onChange={(t: Translations) => set("translations", t as never)}
+                fields={[
+                  { key: "title", label: "Titre", source: editing.title ?? "" },
+                  { key: "short_description", label: "Description courte", rows: 3, source: editing.short_description ?? "" },
+                  { key: "full_description", label: "Description complète", rows: 6, source: editing.full_description ?? "" },
+                ]}
+              />
+            </div>
           </div>
           <div className="rounded-2xl border border-white/10 bg-background/40 p-5">
             <MediaField

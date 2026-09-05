@@ -1,3 +1,4 @@
+import { useLocale } from "@/lib/i18n";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { seoQueryOptions, type SeoConfig } from "@/hooks/use-seo";
 import { pageHead, breadcrumbJsonLd, absoluteUrl } from "@/lib/seo";
@@ -9,7 +10,7 @@ import { SectionHeading } from "@/components/SectionHeading";
 import { CtaButton } from "@/components/CtaButton";
 import { listPublicEvents } from "@/lib/events.functions";
 import { getSiteContent } from "@/lib/site-content.functions";
-import { formatEventDate, formatEventLocation, type EventRecord } from "@/lib/events.shared";
+import { formatEventDate, formatEventLocation, localizeEvent, type EventRecord } from "@/lib/events.shared";
 import { contentText, contentLink, type SiteContentBundle } from "@/lib/site-content.shared";
 
 export const Route = createFileRoute("/evenements")({
@@ -68,10 +69,12 @@ const reasons = [
 ];
 
 function EventsPage() {
-  const { events, bundle } = Route.useLoaderData() as {
+  const { locale } = useLocale();
+  const { events: rawEvents, bundle } = Route.useLoaderData() as {
     events: EventRecord[];
     bundle: SiteContentBundle;
   };
+  const events = rawEvents.map((e) => localizeEvent(e, locale));
   const upcoming = events.filter((e) => e.status !== "past");
   const past = events.filter((e) => e.status === "past");
   const artistsCta = contentLink(bundle, "events.cta.artists", "Voir les artistes", "/artistes");

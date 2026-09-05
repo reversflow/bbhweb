@@ -1,3 +1,4 @@
+import { useLocale, localizeFields } from "@/lib/i18n";
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { SiteShell } from "@/components/SiteShell";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
@@ -66,7 +67,9 @@ export const Route = createFileRoute("/journal/$slug")({
 type Post = PublicPost;
 
 function JournalPost() {
-  const { post } = Route.useLoaderData() as { post: Post | null };
+  const { locale } = useLocale();
+  const { post: rawPost } = Route.useLoaderData() as { post: Post | null };
+  const post = rawPost ? localizeFields(rawPost, locale, ["title", "excerpt", "content"]) : null;
 
   const url = useSignedUrl("journal-media", post?.cover_url ?? null);
 

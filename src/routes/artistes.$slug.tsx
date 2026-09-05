@@ -5,7 +5,9 @@ import { ImageCard } from "@/components/ImageCard";
 import { CtaButton } from "@/components/CtaButton";
 import { seoQueryOptions, type SeoConfig } from "@/hooks/use-seo";
 import { pageHead, breadcrumbJsonLd, absoluteUrl } from "@/lib/seo";
-import { getPublicArtist, type PublicArtist } from "@/lib/artists.functions";
+import { getPublicArtist } from "@/lib/artists.functions";
+import { localizeArtist, type ArtistRecord } from "@/lib/artists.shared";
+import { useLocale, useT } from "@/lib/i18n";
 import { Instagram, Music2, Youtube, MapPin, ArrowLeft, ArrowRight } from "lucide-react";
 
 export const Route = createFileRoute("/artistes/$slug")({
@@ -78,11 +80,14 @@ function ArtistNotFound() {
 }
 
 function ArtistDetail() {
-  const { artist, songs } = Route.useLoaderData() as {
-    artist: PublicArtist | null;
+  const { artist: raw, songs } = Route.useLoaderData() as {
+    artist: ArtistRecord | null;
     songs: { slug: string; title: string }[];
   };
-  if (!artist) return <ArtistNotFound />;
+  const { locale } = useLocale();
+  const t = useT();
+  if (!raw) return <ArtistNotFound />;
+  const artist = localizeArtist(raw, locale);
 
   const socials = [
     { href: artist.instagram, label: "Instagram", Icon: Instagram },
@@ -108,7 +113,7 @@ function ArtistDetail() {
               aspect="aspect-square"
               title=""
               overlay={false}
-              slot={artist.is_founder ? "artist_reverseflow" : undefined}
+              slot={artist.isFounder ? "artist_reverseflow" : undefined}
               alt={`Portrait de ${artist.name}`}
             />
             <div>
@@ -163,7 +168,7 @@ function ArtistDetail() {
 
       {songs.length > 0 && (
         <section className="mx-auto max-w-7xl px-6 py-16">
-          <h2 className="font-display text-3xl font-black tracking-tighter">Morceaux</h2>
+          <h2 className="font-display text-3xl font-black tracking-tighter">{t("artist.music")}</h2>
           <ul className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {songs.map((s) => (
               <li key={s.slug}>
@@ -183,7 +188,7 @@ function ArtistDetail() {
 
       <section className="mx-auto max-w-7xl px-6 pb-32">
         <CtaButton to="/artistes" variant="secondary">
-          <ArrowLeft className="size-4" /> Tout le roster
+          <ArrowLeft className="size-4" /> {t("artist.roster")}
         </CtaButton>
       </section>
     </SiteShell>

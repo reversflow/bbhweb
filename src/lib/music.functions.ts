@@ -42,6 +42,7 @@ const SongInput = z.object({
   seo_title: z.string().max(200).optional().nullable(),
   seo_description: z.string().max(400).optional().nullable(),
   published: z.boolean().default(true),
+  translations: z.record(z.string(), z.record(z.string(), z.string().max(20000))).default({}),
 });
 
 export const upsertSong = createServerFn({ method: "POST" })
@@ -81,6 +82,7 @@ const JournalInput = z.object({
   category: z.string().max(60).optional().nullable(),
   media: z.array(z.string()).default([]),
   published: z.boolean().default(true),
+  translations: z.record(z.string(), z.record(z.string(), z.string().max(20000))).default({}),
 });
 
 export const upsertJournalPost = createServerFn({ method: "POST" })

@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { createUploadUrl, deleteSong, upsertSong } from "@/lib/music.functions";
+import { TranslationsEditor } from "@/components/admin/TranslationsEditor";
+import type { Translations } from "@/lib/i18n";
+import { parseTranslations } from "@/lib/i18n";
 import { Loader2, Plus, Trash2, UploadCloud, Star, Music } from "lucide-react";
 
 type SongRow = {
@@ -22,6 +25,7 @@ type SongRow = {
   seo_title: string | null;
   seo_description: string | null;
   artist_id: string;
+  translations?: unknown;
 };
 
 function slugify(s: string) {
@@ -142,6 +146,7 @@ export function MusicManager() {
           seo_title: editing.seo_title ?? null,
           seo_description: editing.seo_description ?? null,
           published: editing.published ?? true,
+          translations: parseTranslations(editing.translations) as Record<string, Record<string, string>>,
         },
       });
       await refresh();
@@ -329,6 +334,17 @@ function SongForm({
 
       <div className="grid gap-4 md:grid-cols-2">
         <Field label="SEO Titre"><input value={editing.seo_title ?? ""} onChange={(e) => setEditing((s) => (s ? { ...s, seo_title: e.target.value } : s))} className={fieldCls} /></Field>
+        <div className="rounded-2xl border border-white/10 p-4 md:col-span-2">
+          <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">Traductions (ES / EN)</p>
+          <TranslationsEditor
+            value={parseTranslations(editing.translations)}
+            onChange={(t: Translations) => setEditing((s) => (s ? { ...s, translations: t } : s))}
+            fields={[
+              { key: "title", label: "Titre", source: editing.title ?? "" },
+              { key: "description", label: "Description", rows: 3, source: editing.description ?? "" },
+            ]}
+          />
+        </div>
         <Field label="SEO Description"><input value={editing.seo_description ?? ""} onChange={(e) => setEditing((s) => (s ? { ...s, seo_description: e.target.value } : s))} className={fieldCls} /></Field>
       </div>
     </div>

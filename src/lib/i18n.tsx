@@ -219,3 +219,24 @@ export function tField(
   if (typeof value === "string" && value.trim().length > 0) return value;
   return typeof fallback === "string" ? fallback : "";
 }
+
+/**
+ * Generic helper: return a copy of a record with the listed fields resolved
+ * for the given locale, falling back to the stored (French) value.
+ */
+export function localizeFields<T extends { translations?: unknown }>(
+  row: T,
+  locale: Locale,
+  fields: readonly string[],
+): T {
+  const tr = parseTranslations(row.translations);
+  const out = { ...row } as Record<string, unknown>;
+  for (const f of fields) {
+    const current = out[f];
+    if (typeof current === "string" || current == null) {
+      const resolved = tField(tr, locale, f, current as string | null | undefined);
+      if (resolved) out[f] = resolved;
+    }
+  }
+  return out as T;
+}

@@ -145,6 +145,7 @@ export function emptyArtist(): ArtistRecord {
     isFounder: false,
     published: true,
     sortOrder: 0,
+    translations: {},
     updatedAt: null,
   };
 }

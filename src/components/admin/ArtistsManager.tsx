@@ -13,6 +13,7 @@ import {
 import { MediaField, MediaPicker } from "@/components/admin/MediaPicker";
 import { BlockEditor } from "@/components/admin/BlockEditor";
 import { LinksEditor } from "@/components/admin/LinksEditor";
+import { TranslationsEditor } from "@/components/admin/TranslationsEditor";
 import { mediaUrl } from "@/lib/site-images.functions";
 import { ArrowLeft, ExternalLink, Film, Loader2, Plus, Trash2 } from "lucide-react";
 
@@ -189,6 +190,7 @@ async function saveArtist(a: ArtistRecord) {
       is_founder: a.isFounder,
       published: a.published,
       sort_order: a.sortOrder,
+      translations: a.translations as Record<string, Record<string, string>>,
     },
   });
 }
@@ -303,6 +305,19 @@ function ArtistEditor({
         <Field label="Univers artistique">
           <textarea rows={4} className={field} value={a.universe} onChange={(e) => set("universe", e.target.value)} />
         </Field>
+      </Section>
+
+      <Section title="Traductions (ES / EN)">
+        <TranslationsEditor
+          value={a.translations}
+          onChange={(t) => set("translations", t)}
+          fields={[
+            { key: "name", label: "Nom", source: a.name },
+            { key: "short_description", label: "Description courte", rows: 2, source: a.shortDescription },
+            { key: "bio", label: "Biographie", rows: 7, source: a.bio },
+            { key: "universe", label: "Univers artistique", rows: 4, source: a.universe },
+          ]}
+        />
       </Section>
 
       <Section title="Médias">
