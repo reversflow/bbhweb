@@ -7,7 +7,9 @@ import { HeroBackdrop } from "@/components/HeroBackdrop";
 import { SectionHeading } from "@/components/SectionHeading";
 import { CtaButton } from "@/components/CtaButton";
 import { ImageCard } from "@/components/ImageCard";
-import { listPublicArtists, type PublicArtist } from "@/lib/artists.functions";
+import { listPublicArtists } from "@/lib/artists.functions";
+import { localizeArtist, type ArtistRecord } from "@/lib/artists.shared";
+import { useLocale, useT } from "@/lib/i18n";
 
 
 export const Route = createFileRoute("/artistes")({
@@ -33,7 +35,10 @@ export const Route = createFileRoute("/artistes")({
 
 
 function ArtistsPage() {
-  const { artists } = Route.useLoaderData() as { artists: PublicArtist[] };
+  const { artists: rawArtists } = Route.useLoaderData() as { artists: ArtistRecord[] };
+  const { locale } = useLocale();
+  const t = useT();
+  const artists = rawArtists.map((a) => localizeArtist(a, locale));
   return (
     <SiteShell>
       {/* Header */}
@@ -78,7 +83,7 @@ function ArtistsPage() {
                 title=""
                 overlay={false}
                 className="rounded-none border-none"
-                slot={a.is_founder ? "artist_reverseflow" : undefined}
+                slot={a.isFounder ? "artist_reverseflow" : undefined}
                 alt={`Portrait de ${a.name}`}
               />
 
@@ -107,7 +112,7 @@ function ArtistsPage() {
                       </span>
                     ))}
                   </div>
-                  <p className="mt-4 text-sm text-muted-foreground">{a.bio}</p>
+                  <p className="mt-4 text-sm text-muted-foreground">{a.shortDescription || a.bio}</p>
                 </div>
                 <div className="mt-6 flex items-center gap-2">
                   <Link
@@ -115,35 +120,26 @@ function ArtistsPage() {
                     params={{ slug: a.slug }}
                     className="mr-2 inline-flex items-center gap-1.5 rounded-full border border-white/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground transition hover:border-electric/40 hover:text-foreground"
                   >
-                    Profil <ArrowRight className="size-3.5" />
+                    {t("cta.profile")} <ArrowRight className="size-3.5" />
                   </Link>
-                  <a
-                    href={a.instagram ?? "#"}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="Instagram"
-                    className="grid size-9 place-items-center rounded-full border border-white/10 text-muted-foreground transition hover:border-electric/40 hover:text-foreground"
-                  >
-                    <Instagram className="size-4" />
-                  </a>
-                  <a
-                    href={a.spotify ?? "#"}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="Spotify"
-                    className="grid size-9 place-items-center rounded-full border border-white/10 text-muted-foreground transition hover:border-electric/40 hover:text-foreground"
-                  >
-                    <Music2 className="size-4" />
-                  </a>
-                  <a
-                    href={a.youtube ?? "#"}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="YouTube"
-                    className="grid size-9 place-items-center rounded-full border border-white/10 text-muted-foreground transition hover:border-electric/40 hover:text-foreground"
-                  >
-                    <Youtube className="size-4" />
-                  </a>
+                  {[
+                    { href: a.instagram, label: "Instagram", Icon: Instagram },
+                    { href: a.spotify, label: "Spotify", Icon: Music2 },
+                    { href: a.youtube, label: "YouTube", Icon: Youtube },
+                  ]
+                    .filter((s) => !!s.href)
+                    .map(({ href, label, Icon }) => (
+                      <a
+                        key={label}
+                        href={href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={`${label} — ${a.name}`}
+                        className="grid size-9 place-items-center rounded-full border border-white/10 text-muted-foreground transition hover:border-electric/40 hover:text-foreground"
+                      >
+                        <Icon className="size-4" />
+                      </a>
+                    ))}
                 </div>
               </div>
             </article>
@@ -165,7 +161,7 @@ function ArtistsPage() {
           />
           <div className="mt-8">
             <CtaButton to="/contact" variant="primary">
-              Envoyer ton profil <ArrowRight className="size-4" />
+              {t("artist.sendProfile")} <ArrowRight className="size-4" />
             </CtaButton>
           </div>
         </div>
