@@ -1,3 +1,4 @@
+import { useLocale } from "@/lib/i18n";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { SiteShell } from "@/components/SiteShell";
@@ -12,6 +13,7 @@ import {
   formatEventLocation,
   eventPriceLabel,
   type EventRecord,
+  localizeEvent,
 } from "@/lib/events.shared";
 import { sanitizeRichText } from "@/lib/site-content.shared";
 import { BlockRenderer } from "@/components/blocks/BlockRenderer";
@@ -121,7 +123,8 @@ export const Route = createFileRoute("/evenements/$slug")({
 });
 
 function EventDetailPage() {
-  const { event, related, redirectTo } = Route.useLoaderData() as {
+  const { locale } = useLocale();
+  const { event: rawEvent, related: rawRelated, redirectTo } = Route.useLoaderData() as {
     event: EventRecord | null;
     related: EventRecord[];
     redirectTo: string | null;
