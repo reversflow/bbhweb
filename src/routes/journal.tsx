@@ -1,3 +1,4 @@
+import { useLocale, localizeFields } from "@/lib/i18n";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { seoQueryOptions, type SeoConfig } from "@/hooks/use-seo";
 import { pageHead, breadcrumbJsonLd, absoluteUrl } from "@/lib/seo";
@@ -47,7 +48,9 @@ export const Route = createFileRoute("/journal")({
 type Post = PublicPost;
 
 function JournalIndex() {
-  const { posts } = Route.useLoaderData() as { posts: Post[] };
+  const { locale } = useLocale();
+  const { posts: rawPosts } = Route.useLoaderData() as { posts: Post[] };
+  const posts = rawPosts.map((p) => localizeFields(p, locale, ["title", "excerpt"]));
   const loading = false;
 
 
