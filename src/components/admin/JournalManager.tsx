@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { deleteJournalPost, upsertJournalPost } from "@/lib/music.functions";
+import { TranslationsEditor } from "@/components/admin/TranslationsEditor";
+import type { Translations } from "@/lib/i18n";
+import { parseTranslations } from "@/lib/i18n";
 import { Plus, Trash2 } from "lucide-react";
 
 type PostRow = {
@@ -13,6 +16,7 @@ type PostRow = {
   category: string | null;
   published: boolean;
   published_at: string;
+  translations?: unknown;
 };
 
 function slugify(s: string) {
@@ -47,6 +51,7 @@ export function JournalManager() {
           category: editing.category ?? null,
           media: [],
           published: editing.published ?? true,
+          translations: parseTranslations(editing.translations) as Record<string, Record<string, string>>,
         },
       });
       await refresh();
@@ -102,6 +107,18 @@ export function JournalManager() {
           <span className="mb-1.5 block text-[11px] uppercase tracking-widest text-muted-foreground">Contenu</span>
           <textarea rows={16} value={editing.content ?? ""} onChange={(e) => setEditing((s) => (s ? { ...s, content: e.target.value } : s))} className={cls} placeholder="Texte, Markdown léger accepté…" />
         </label>
+        <div className="rounded-2xl border border-white/10 p-4">
+          <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">Traductions (ES / EN)</p>
+          <TranslationsEditor
+            value={parseTranslations(editing.translations)}
+            onChange={(t: Translations) => setEditing((s) => (s ? { ...s, translations: t } : s))}
+            fields={[
+              { key: "title", label: "Titre", source: editing.title ?? "" },
+              { key: "excerpt", label: "Extrait", rows: 2, source: editing.excerpt ?? "" },
+              { key: "content", label: "Contenu", rows: 12, source: editing.content ?? "" },
+            ]}
+          />
+        </div>
         <label className="inline-flex items-center gap-2 text-sm">
           <input type="checkbox" checked={editing.published ?? true} onChange={(e) => setEditing((s) => (s ? { ...s, published: e.target.checked } : s))} className="size-4 accent-electric" />
           Publié

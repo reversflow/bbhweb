@@ -15,6 +15,9 @@ import {
 } from "@/lib/events.shared";
 import { BlockEditor } from "@/components/admin/BlockEditor";
 import { MediaField } from "@/components/admin/MediaPicker";
+import { TranslationsEditor } from "@/components/admin/TranslationsEditor";
+import type { Translations } from "@/lib/i18n";
+
 import type { Block } from "@/lib/blocks.shared";
 import { Plus, Trash2, Copy, ExternalLink } from "lucide-react";
 
@@ -107,6 +110,7 @@ export function EventsManager() {
           social_links: editing.social_links ?? [],
           artists: editing.artists ?? [],
           partners: editing.partners ?? [],
+          translations: editing.translations ?? {},
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } as any,
       });
