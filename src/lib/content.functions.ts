@@ -25,7 +25,7 @@ export type PublicSong = {
   streaming_links: Record<string, string> | null;
   seo_title: string | null;
   seo_description: string | null;
-  translations?: unknown;
+  translations?: Record<string, Record<string, string>>;
   updated_at?: string | null;
 };
 
@@ -38,7 +38,7 @@ export type PublicPost = {
   cover_url: string | null;
   category: string | null;
   published_at: string;
-  translations?: unknown;
+  translations?: Record<string, Record<string, string>>;
   updated_at?: string | null;
 };
 
