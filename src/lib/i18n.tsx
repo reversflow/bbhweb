@@ -224,12 +224,12 @@ export function tField(
  * Generic helper: return a copy of a record with the listed fields resolved
  * for the given locale, falling back to the stored (French) value.
  */
-export function localizeFields<T extends { translations?: unknown }>(
+export function localizeFields<T extends object>(
   row: T,
   locale: Locale,
   fields: readonly string[],
 ): T {
-  const tr = parseTranslations(row.translations);
+  const tr = parseTranslations((row as { translations?: unknown }).translations);
   const out = { ...row } as Record<string, unknown>;
   for (const f of fields) {
     const current = out[f];
