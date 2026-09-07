@@ -1,3 +1,4 @@
+import { useLocale, localizeFields } from "@/lib/i18n";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { SiteShell } from "@/components/SiteShell";
 import { CommentSection } from "@/components/CommentSection";
@@ -76,7 +77,10 @@ export const Route = createFileRoute("/musique/$slug")({
 type Song = PublicSong;
 
 function SongPage() {
-  const { song, related } = Route.useLoaderData() as { song: Song | null; related: Song[] };
+  const { locale } = useLocale();
+  const { song: rawSong, related: rawRelated } = Route.useLoaderData() as { song: Song | null; related: Song[] };
+  const song = rawSong ? localizeFields(rawSong, locale, ["title", "description"]) : null;
+  const related = rawRelated.map((r) => localizeFields(r, locale, ["title", "description"]));
   const player = usePlayer();
 
   const cover = useSignedUrl("song-artwork", song?.cover_url ?? null);
