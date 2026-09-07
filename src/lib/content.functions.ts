@@ -25,6 +25,7 @@ export type PublicSong = {
   streaming_links: Record<string, string> | null;
   seo_title: string | null;
   seo_description: string | null;
+  translations?: unknown;
   updated_at?: string | null;
 };
 
@@ -37,11 +38,12 @@ export type PublicPost = {
   cover_url: string | null;
   category: string | null;
   published_at: string;
+  translations?: unknown;
   updated_at?: string | null;
 };
 
 const SONG_COLUMNS =
-  "id, slug, title, description, genres, duration_seconds, release_date, cover_url, audio_url, lyrics, credits, featured, comments_enabled, streaming_links, seo_title, seo_description, updated_at";
+  "id, slug, title, description, genres, duration_seconds, release_date, cover_url, audio_url, lyrics, credits, featured, comments_enabled, streaming_links, seo_title, seo_description, translations, updated_at";
 
 /** Public: one published song by slug, plus a few related tracks. */
 export const getPublicSong = createServerFn({ method: "GET" })
@@ -86,7 +88,7 @@ export const getPublicPost = createServerFn({ method: "GET" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: post } = await supabaseAdmin
       .from("journal_posts")
-      .select("id, slug, title, excerpt, content, cover_url, category, published_at, updated_at")
+      .select("id, slug, title, excerpt, content, cover_url, category, published_at, translations, updated_at")
       .eq("slug", data.slug)
       .eq("published", true)
       .maybeSingle();
@@ -98,7 +100,7 @@ export const listPublicPosts = createServerFn({ method: "GET" }).handler(async (
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const { data } = await supabaseAdmin
     .from("journal_posts")
-    .select("id, slug, title, excerpt, content, cover_url, category, published_at, updated_at")
+    .select("id, slug, title, excerpt, content, cover_url, category, published_at, translations, updated_at")
     .eq("published", true)
     .order("published_at", { ascending: false });
   return (data ?? []) as unknown as PublicPost[];
